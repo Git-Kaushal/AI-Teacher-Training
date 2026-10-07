@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Teacher Training Programme (Sample) | MMP</title>
+<style>
+:root{--bg:#fff8f1;--panel:#fff;--ink:#24170c;--muted:#76604e;--line:#f1dcc8;--brand:#ea580c;--soft:#fff1e3;
+  --top:linear-gradient(100deg,#ea580c 0%,#f59e0b 55%,#f97316 100%);--canvas:#fffdfb;--ok:#15803d;--no:#b91c1c;--shadow:0 2px 10px rgba(120,60,10,.08)}
+@media (prefers-color-scheme:dark){:root{--bg:#15110e;--panel:#1f1914;--ink:#f6ece3;--muted:#b9a593;--line:#3a2e25;--brand:#fb923c;--soft:#2a2019;
+  --top:linear-gradient(100deg,#c2410c 0%,#d97706 60%,#ea580c 100%);--canvas:#f8f4ef;--ok:#4ade80;--no:#f87171;--shadow:0 2px 10px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--c,var(--brand))}
+.top{background:var(--top);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top .logo{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex:none}
+.top h1{margin:0;font-size:19px;flex:1;min-width:180px;cursor:pointer}
+.top h1 small{display:block;font-weight:400;font-size:12.5px;opacity:.93}
+.top a.out{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px;white-space:nowrap}
+.sample{background:#fef3c7;color:#78350f;border-bottom:1px solid #f59e0b;padding:7px 14px;font-size:13px;text-align:center}
+main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:14px 16px 32px}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 14px;font-size:14px}
+.crumbs a{text-decoration:none;font-weight:600;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,var(--panel));color:color-mix(in srgb,var(--c) 85%,var(--ink));border:1px solid color-mix(in srgb,var(--c) 35%,var(--line))}
+.crumbs span.sep{color:var(--muted)}
+.hero{border-radius:16px;padding:18px 18px 16px;color:#fff;background:linear-gradient(120deg,var(--c),var(--c2,var(--c)));box-shadow:var(--shadow);margin-bottom:16px}
+.hero h2{margin:0 0 4px;font-size:22px}
+.hero p{margin:0;opacity:.95}
+.hero .chips{margin-top:10px}
+.chip{display:inline-block;font-size:12.5px;font-weight:600;border-radius:999px;padding:2px 10px;margin:2px 4px 2px 0;background:rgba(255,255,255,.22)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{display:flex;flex-direction:column;gap:6px;text-align:left;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--c) 8%,var(--panel));border:1px solid color-mix(in srgb,var(--c) 28%,var(--line));border-top:6px solid var(--c);border-radius:14px;padding:14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--c) 30%,transparent)}
+.card h3{margin:0;font-size:17px;color:color-mix(in srgb,var(--c) 82%,var(--ink))}
+.card .k{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--c)}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.card .meta{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;background:color-mix(in srgb,var(--c) 16%,var(--panel));color:color-mix(in srgb,var(--c) 80%,var(--ink))}
+.card.lock{opacity:.78;cursor:default}
+.card.lock:hover{transform:none;box-shadow:var(--shadow)}
+.big .card{min-height:150px}
+.big .card h3{font-size:21px}
+.cls{font-size:44px;font-weight:800;line-height:1;color:var(--c)}
+.sec{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.sec>h3{margin:0 0 10px;font-size:17px;display:flex;align-items:center;gap:8px;color:color-mix(in srgb,var(--c) 85%,var(--ink))}
+.sec>h3 .n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--c);color:#fff;font-size:13px;align-items:center;justify-content:center;flex:none}
+@media (prefers-color-scheme:dark){.sec>h3 .n,.btn.p,.hero{color:#fff}}
+ul.lo{margin:0;padding-left:20px}ul.lo li{margin:3px 0}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.topic{border:1px solid color-mix(in srgb,var(--c) 30%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--c) 6%,var(--panel));padding:0}
+.topic summary{cursor:pointer;padding:9px 12px;font-weight:600;list-style:none;display:flex;gap:8px;align-items:flex-start}
+.topic summary::-webkit-details-marker{display:none}
+.topic summary::before{content:"+";flex:none;width:20px;height:20px;border-radius:6px;background:var(--c);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.topic[open] summary::before{content:"−"}
+.topic div{padding:0 12px 10px 40px;font-size:14px}
+.btn{text-decoration:none;display:inline-block;border:1px solid color-mix(in srgb,var(--c,var(--brand)) 45%,var(--line));background:var(--panel);border-radius:10px;padding:7px 14px;cursor:pointer;font-weight:600;color:color-mix(in srgb,var(--c,var(--brand)) 85%,var(--ink))}
+.btn:hover{background:color-mix(in srgb,var(--c,var(--brand)) 10%,var(--panel))}
+.btn.p{background:var(--c,var(--brand));border-color:var(--c,var(--brand));color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mut{color:var(--muted);font-size:13.5px}
+.okc{color:var(--ok);font-weight:700}.noc{color:var(--no);font-weight:700}
+.links a{display:inline-block;margin:3px 8px 3px 0;font-size:14px}
+/* sort / order */
+.pool{display:flex;flex-wrap:wrap;gap:6px;min-height:42px;padding:8px;border:1px dashed color-mix(in srgb,var(--c) 40%,var(--line));border-radius:10px;margin-bottom:10px}
+.it{border:1px solid color-mix(in srgb,var(--c) 40%,var(--line));background:var(--panel);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px}
+.it.sel{background:var(--c);color:#fff;border-color:var(--c)}
+.it.good{background:color-mix(in srgb,var(--ok) 18%,var(--panel));border-color:var(--ok)}
+.it.bad{background:color-mix(in srgb,var(--no) 18%,var(--panel));border-color:var(--no)}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.bucket{border:2px solid color-mix(in srgb,var(--bc) 55%,var(--line));background:color-mix(in srgb,var(--bc) 8%,var(--panel));border-radius:12px;padding:8px;min-height:90px;cursor:pointer}
+.bucket b{display:block;color:color-mix(in srgb,var(--bc) 85%,var(--ink));margin-bottom:6px;font-size:14px}
+.bucket .it{display:inline-block;margin:2px}
+.seq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:42px;margin:8px 0}
+.seq .it::before{content:attr(data-n);display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-size:12px;align-items:center;justify-content:center;margin-right:6px}
+/* quiz */
+.qcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:color-mix(in srgb,var(--c) 4%,var(--panel))}
+.qcard .qn{font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.qcard .q{font-weight:600;margin-bottom:8px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 12px;cursor:pointer}
+.opt:hover{border-color:var(--c)}
+.opt.right{background:color-mix(in srgb,var(--ok) 20%,var(--panel));border-color:var(--ok)}
+.opt.wrong{background:color-mix(in srgb,var(--no) 18%,var(--panel));border-color:var(--no)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 10px}
+.bar i{display:block;height:100%;background:var(--c)}
+/* tables */
+.tw{overflow-x:auto;margin:6px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:5px 8px;text-align:center;white-space:nowrap}
+th{background:color-mix(in srgb,var(--c,var(--brand)) 12%,var(--panel))}
+td.l,th.l{text-align:left;white-space:normal}
+/* widgets */
+.wbox{border:1px solid color-mix(in srgb,var(--c) 25%,var(--line));border-radius:12px;padding:12px;background:var(--panel);margin:8px 0}
+.wbox h4{margin:0 0 8px;font-size:15px;color:color-mix(in srgb,var(--c) 85%,var(--ink))}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+label.f{display:block;font-size:14px;margin:6px 0}
+label.f span{display:block;margin-bottom:3px;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--c,var(--brand))}
+input[type=text],input[type=number],textarea,select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+textarea{min-height:80px;resize:vertical}
+pre.code{background:#1e1b2e;color:#f4f1ff;border-radius:10px;padding:12px;overflow-x:auto;font:13px/1.5 ui-monospace,Consolas,Menlo,monospace;margin:6px 0;user-select:text}
+pre.code .kw{color:#f9a8d4}pre.code .st{color:#a7f3d0}pre.code .nu{color:#fcd34d}pre.code .cm{color:#94a3b8}pre.code .fn{color:#93c5fd}
+pre.out{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:10px 12px;overflow-x:auto;font:13px/1.45 ui-monospace,Consolas,Menlo,monospace;margin:6px 0;min-height:40px;white-space:pre}
+.cv{background:var(--canvas);border-radius:10px;border:1px solid var(--line);display:block;max-width:100%}
+.mat{display:inline-grid;gap:2px;margin:4px 0}
+.mat div{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:11px;border-radius:4px;font-variant-numeric:tabular-nums}
+.mat input{width:54px;padding:4px;text-align:center}
+.cm input{background:#fff;color:#111;width:70px}
+.hl{outline:3px solid #f43f5e;outline-offset:-2px}
+.calc{font:13px/1.6 ui-monospace,Consolas,monospace;background:var(--soft);border-radius:8px;padding:8px 10px;overflow-x:auto}
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;max-width:360px}
+.cm div{border-radius:8px;padding:8px;text-align:center;font-weight:700}
+.cm .h{background:transparent;font-weight:600;font-size:13px;color:var(--muted)}
+.tp{background:#dcfce7;color:#14532d}.tn{background:#dbeafe;color:#1e3a8a}.fp{background:#fee2e2;color:#7f1d1d}.fn{background:#fef3c7;color:#78350f}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:8px 0}
+.kpi{border-radius:10px;padding:8px 10px;background:color-mix(in srgb,var(--c) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--c) 30%,var(--line))}
+.kpi b{display:block;font-size:20px;color:color-mix(in srgb,var(--c) 85%,var(--ink))}
+.kpi span{font-size:12.5px;color:var(--muted)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tabs button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 13px;cursor:pointer;font-weight:600;font-size:14px}
+.tabs button.on{background:var(--c);border-color:var(--c);color:#fff}
+.plist{display:flex;flex-direction:column;gap:4px;max-height:520px;overflow:auto}
+.plist button{text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:13.5px;display:flex;gap:8px}
+.plist button b{color:var(--c);min-width:28px}
+.plist button.on{background:color-mix(in srgb,var(--c) 15%,var(--panel));border-color:var(--c)}
+.plist button .tick{margin-left:auto;color:var(--ok)}
+.check li{list-style:none;margin:4px 0}
+.check{padding-left:0;margin:0}
+.check label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.check input{margin-top:4px;accent-color:var(--c)}
+details.viva{border-bottom:1px solid var(--line);padding:6px 0}
+details.viva summary{cursor:pointer;font-weight:600;color:color-mix(in srgb,var(--c) 85%,var(--ink))}
+details.viva p{margin:6px 0 2px}
+.lockbox{border:1px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted)}
+/* mind map */
+.mmwrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--canvas);max-height:76vh}
+.mmwrap svg text{font:12.5px system-ui,sans-serif}
+.mmnode{cursor:pointer}
+footer{padding:14px;text-align:center;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:var(--panel)}
+footer b{color:var(--ink)}
+@media (max-width:600px){main{padding:12px 12px 26px}.top h1{font-size:17px}.hero h2{font-size:19px}.cls{font-size:36px}}
+@media print{html{display:none!important}}
+
+.hero.dash .k{display:block;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.9;margin-bottom:4px}
+.hero.dash h2{font-size:26px}
+.tools{margin-bottom:18px}
+.track{border-radius:16px;padding:12px;margin:0 0 16px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 10%,var(--panel)),color-mix(in srgb,var(--c2) 8%,var(--panel)));border:1px solid color-mix(in srgb,var(--c) 30%,var(--line))}
+.track .th{display:flex;gap:12px;align-items:center;margin:2px 4px 12px}
+.track .th h3{margin:0;font-size:19px;color:color-mix(in srgb,var(--c) 85%,var(--ink))}
+.track .th p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+.track .tn{flex:none;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--c),var(--c2));color:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center}
+.cc{display:inline-flex;align-items:center;justify-content:center;min-width:30px;font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 7px;background:var(--k);color:#fff}
+.card .arrow{color:var(--muted);font-weight:700}
+.maps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.mapc{display:flex;gap:10px;align-items:flex-start;text-decoration:none;color:var(--ink);border:1px solid color-mix(in srgb,var(--k) 35%,var(--line));border-left:5px solid var(--k);border-radius:10px;padding:8px 10px;background:color-mix(in srgb,var(--k) 6%,var(--panel))}
+a.mapc:hover{background:color-mix(in srgb,var(--k) 14%,var(--panel))}
+.mapc .cl,.rung .cl{flex:none;min-width:40px;height:30px;border-radius:8px;background:var(--k);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px;padding:0 5px}
+.mapc b{color:color-mix(in srgb,var(--k) 80%,var(--ink));font-size:14px}
+.mapc p,.rung p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.plan .step{border:1px solid color-mix(in srgb,var(--c) 30%,var(--line));border-radius:10px;padding:8px 10px;background:color-mix(in srgb,var(--c) 6%,var(--panel))}
+.plan .mn{float:right;font-weight:800;color:var(--c)}
+.plan p{margin:4px 0 0;font-size:13.5px}
+.tl{display:flex;height:10px;border-radius:99px;overflow:hidden;margin-top:10px;gap:2px}
+.myths{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.myth{border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.myth p{margin:0;padding:8px 10px;font-size:14px}
+.myth .x{background:color-mix(in srgb,var(--no) 10%,var(--panel))}
+.myth .y{background:color-mix(in srgb,var(--ok) 10%,var(--panel))}
+.ladder{position:relative;display:flex;flex-direction:column;gap:8px;padding-left:4px}
+.rung{display:flex;gap:10px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--k) 35%,var(--line));border-left:5px solid var(--k);border-radius:10px;padding:8px 10px;background:color-mix(in srgb,var(--k) 6%,var(--panel))}
+.rung b{font-size:13px;color:color-mix(in srgb,var(--k) 80%,var(--ink))}
+.rung p{color:var(--ink);font-size:14.5px}
+table.lad td{vertical-align:top;font-size:13px}
+@media (max-width:600px){.hero.dash h2{font-size:21px}.track{padding:10px 8px}}
+</style>
+</head>
+<body>
+<div class="sample"><b>Sample edition</b>: a showcase of the AI Teacher Training Programme by Kaushal J (2 of 14 modules, 2 of 9 labs). The full edition is shared with participating schools directly.</div>
+<header class="top">
+  <div class="logo"><svg viewBox="0 0 32 32" width="28" height="28"><circle cx="16" cy="16" r="6" fill="#fff"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M16 3v5M16 24v5M3 16h5M24 16h5M6.8 6.8l3.5 3.5M21.7 21.7l3.5 3.5M6.8 25.2l3.5-3.5M21.7 10.3l3.5-3.5"/></g></svg></div>
+  <h1 id="home">AI Teacher Training<small>AI in Education · Classes VII → XII · mind maps, visual labs and adaptive assessment</small></h1>
+  <a class="out" href="training-assessment.html">Adaptive assessment &rarr;</a><a class="out" href="https://git-kaushal.github.io/Mind-Map-and-Visual-Labs/">MMP site &#8599;</a>
+</header>
+<main id="app"></main>
+<footer>
+  AI in Education &mdash; Teacher Training Programme &middot; Mind Maps, Visual Labs and Adaptive Assessment<br>
+  Original instructional design &amp; content by <b>Kaushal J</b> &middot; Education Strategist &middot; AI in Education &middot; © 2026 Kaushal J. Sample edition.<br>
+  <span style="font-size:12px">Based on the CBSE Computational Thinking and AI handbooks (Classes VII–VIII), Artificial Intelligence 417 (Classes IX–X) and Artificial Intelligence 843 (Classes XI–XII, 2026-27). Tool links open external websites.</span>
+</footer>
+<script>
+const DATA = {"sample": true, "single": "T", "classes": [{"id": "T", "name": "AI Teacher Training", "kicker": "Teacher training · VII → XII", "c": "#ea580c", "c2": "#db2777", "active": true, "desc": "", "tags": []}], "C": {"T": {"title": "AI in Education: Teacher Training Programme", "summary": "A training curriculum for teachers of AI in Classes VII–X, built on the CBSE Computational Thinking and AI handbooks and AI (417), with use cases from AI (843) for Classes XI–XII. Each module links to the class pages your students use.", "chips": ["14 modules", "4 tracks", "9 visual labs", "58 + 12 hours", "Adaptive assessment", "Classes VII → XII"], "mapTitle": "AI Teacher Training Programme", "parts": [{"id": "F", "short": "Track 1", "kicker": "Track 1 · 4 modules · 16 h", "title": "Track 1: AI Foundations", "c": "#ea580c", "c2": "#f59e0b", "desc": "What AI is, the computational thinking behind it, the project cycle and data literacy: the base every AI teacher needs.", "pills": ["M1", "M2", "M3", "M4"], "units": [{"id": "m1", "code": "M1", "title": "What AI Is: Domains and Everyday AI", "hours": 3, "outcomes": ["Explain AI, machine learning and deep learning with one clear classroom example each.", "Classify applications into the three AI domains (data, computer vision, NLP).", "Tell AI apart from ordinary automation and fixed rules.", "Plan a first lesson that starts from tools students already use."], "topics": [["AI, ML and DL", "AI is the broad goal of machines acting intelligently. Machine learning is AI that learns patterns from data instead of following hand-written rules. Deep learning is machine learning with many-layered neural networks. Draw them as three nested circles."], ["The three domains", "Data science (numbers and tables: predicting prices), computer vision (images and video: face unlock) and natural language processing (text and speech: voice assistants). Many products combine two or three."], ["AI or not AI?", "A system is AI-based when it learns from data or adapts its behaviour. A calculator, a timer or a fixed if–then rule is automation, not AI."], ["Narrow and general AI", "All AI in use today is narrow: it is good at one task. General AI (human-like at everything) does not exist yet; say so plainly to avoid sci-fi fears."], ["Everyday AI", "Recommendations, maps traffic estimates, spam filters, autocorrect, photo search and translation. Starting from these makes AI concrete for Class VII."], ["Benefits and limits", "AI is fast, scalable and consistent, but it can be biased, it cannot explain itself easily, and it fails on situations unlike its training data."]], "classes": [["VII", "VII/AI/g1", "AI 1 · AI Domains and Applications", "Students meet the three domains and sort everyday apps."], ["VIII", "VIII/AI/ai2", "AI 2 · AI and Its Applications", "AI in Indian sectors: agriculture, health, transport."], ["IX", "IX/U1/u11", "1.1 · Understanding AI", "Definitions, AI vs ML vs DL, domains and AI in daily life."], ["X", "X/B/b1", "Unit 1 · Revisiting the AI Project Cycle", "Domains revisited as the starting point of a project."]], "bridge": [["XI", "Unit 1 · AI for Everyone", "Evolution and types of AI, AI terminology, and categorising applications into the three domains (practical file activity 1)."], ["XI", "Unit 2 · Unlocking Your Future in AI", "Job roles and skills in AI: students list ten companies hiring for AI roles. Use the domain sort to connect roles to domains."], ["XII", "Unit 4 · AI with Orange", "The same three domains appear as Orange add-ons: data mining, image analytics and text mining."]], "plan": [["10", "Hook", "Show five apps on a slide (maps, face unlock, spam filter, calculator, voice typing). Students vote: AI or not?"], ["15", "Concept", "Nested circles for AI, ML and DL; the three domains with one Indian example each."], ["15", "Activity", "Domain sort (below) in pairs; each pair defends one tricky item."], ["10", "Discuss", "Benefits and limits: where would you not trust an AI decision?"], ["10", "Check", "Exit ticket: name one AI you used today, its domain, and the data it learns from."]], "myths": [["AI thinks and understands like a person.", "Today’s AI finds patterns in data; it has no understanding or intentions. Use ‘the model predicts’ instead of ‘the AI thinks’."], ["Any computer program is AI.", "Contrast a calculator (fixed rules) with a spam filter (learns from examples)."], ["AI is always right because it is a machine.", "Show a wrong autocorrect or translation; errors come from data and design."]], "activities": [{"type": "sort", "title": "Which domain? (as students do it in Class VII)", "hint": "Sort each application into its main domain.", "buckets": ["Data science", "Computer vision", "Natural language processing"], "items": [["Predicting tomorrow’s electricity demand", 0], ["Loan approval from income records", 0], ["Movie recommendations", 0], ["Face unlock on a phone", 1], ["Counting cars at a traffic signal", 1], ["Detecting crop disease from leaf photos", 1], ["Voice typing", 2], ["Translating English to Hindi", 2], ["Chatbot for railway enquiries", 2]]}, {"type": "sort", "title": "AI or plain automation?", "hint": "Sort each system.", "buckets": ["Uses AI (learns from data)", "Automation (fixed rules)"], "items": [["Spam filter that improves with reports", 0], ["Map that estimates traffic delay", 0], ["Photo app that groups faces", 0], ["Washing machine timer", 1], ["Calculator", 1], ["Street light that switches on at 6 pm", 1]]}], "quiz": [["Which statement best describes machine learning?", ["Programs that follow rules written by experts", "Systems that learn patterns from data", "Robots that move by themselves", "Any software that runs on the internet"], 1, "ML learns from examples instead of hand-written rules."], ["Deep learning is", ["a different field from AI", "machine learning with many-layered neural networks", "any program with a large database", "AI that understands like a human"], 1, "DL sits inside ML, which sits inside AI."], ["A street light that turns on at exactly 6 pm every day is", ["computer vision", "machine learning", "automation with a fixed rule", "natural language processing"], 2, "It does not learn or adapt."], ["Detecting crop disease from leaf photographs belongs mainly to", ["Data science", "Computer vision", "NLP", "Robotics only"], 1, "Input is images."], ["All AI in use today is best described as", ["general AI", "narrow AI", "super AI", "conscious AI"], 1, "Each system does one kind of task well."], ["A good first lesson on AI for Class VII should begin with", ["the mathematics of neural networks", "tools students already use every day", "Python syntax", "the history of computing hardware"], 1, "Start from the familiar, then name the concepts."]], "c": "#ea580c"}, {"id": "m2", "code": "M2", "title": "Computational Thinking: the Thinking Behind AI", "hours": 4, "c": "#ca8a04", "locked": true}, {"id": "m3", "code": "M3", "title": "The AI Project Cycle and Design Thinking", "hours": 4, "c": "#db2777", "locked": true}, {"id": "m4", "code": "M4", "title": "Data Literacy and Statistics for AI", "hours": 5, "c": "#0d9488", "locked": true}]}, {"id": "D", "short": "Track 2", "kicker": "Track 2 · 5 modules · 22 h", "title": "Track 2: AI Domains and Models", "c": "#2563eb", "c2": "#7c3aed", "desc": "Machine learning, model evaluation, computer vision, NLP, neural networks and generative AI, as taught in Classes VII–X and used in XI–XII.", "pills": ["M5", "M6", "M7", "M8", "M9"], "units": [{"id": "m5", "code": "M5", "title": "Machine Learning: Regression, Classification, Clustering", "hours": 5, "c": "#2563eb", "locked": true}, {"id": "m6", "code": "M6", "title": "Evaluating Models: Accuracy Is Not Enough", "hours": 4, "c": "#7c3aed", "locked": true}, {"id": "m7", "code": "M7", "title": "Computer Vision: How Machines See", "hours": 4, "outcomes": ["Explain images as grids of pixel numbers (grayscale and RGB).", "Demonstrate convolution, edge detection and pooling with small grids.", "Describe the CV pipeline: acquisition, pre-processing, feature extraction, analysis.", "Run a no-code image classifier project with Teachable Machine."], "topics": [["Pixels and resolution", "A digital image is a grid of pixels. Grayscale stores one value (0 black to 255 white); RGB stores three. A 1920 × 1080 image has about 2 million pixels."], ["CV tasks", "Image classification (what is it?), object detection (what and where?), segmentation (which pixels?), and face recognition."], ["Convolution", "A small kernel slides over the image, multiplying and adding. Different kernels find edges, blur or sharpen."], ["Pooling", "Max pooling keeps the strongest value in each block, making the image smaller while keeping features."], ["CNN", "A convolutional neural network stacks convolution, pooling and fully connected layers to go from pixels to a label."], ["CV pipeline (XII)", "Acquisition → pre-processing → feature extraction → detection/segmentation → analysis and decision."], ["Challenges", "Lighting, angle, occlusion, privacy of faces, and bias when some skin tones or regions are missing from training data."]], "classes": [["VII", "VII/AI/g1", "AI 1 · AI Domains", "Computer vision as one of three domains, with everyday examples."], ["VIII", "VIII/D/d5", "Teachable Machine Projects", "No-code image classifiers trained by students."], ["X", "X/B/b5", "Unit 5 · Computer Vision", "Pixels, RGB, convolution, pooling and CNNs."], ["X", "X/C/c3", "Computer Vision Lab", "Pixel art, convolution, pooling and a mini CNN."]], "bridge": [["XII", "Unit 3 · Making Machines See", "The CV pipeline, Binary Art (images with 0s and 1s), a website with an ML model, and OpenCV for advanced learners."], ["XII", "Unit 4 · AI with Orange", "Image Analytics add-on: image embedding and clustering of photos."], ["XII", "Unit 6 · Neural Networks", "CNNs as one type of neural network; ML for Kids animal and bird recognisers."]], "plan": [["10", "Hook", "Zoom into a photo until pixels appear. How does a computer store this?"], ["15", "Pixels", "Pixel-art lab: draw a letter with 0s and 1s; mix colours with the RGB lab."], ["15", "Features", "Apply the edge kernel; ask what the output highlights."], ["15", "Project", "Train a 3-class Teachable Machine model; test it with new images."], ["5", "Check", "Order the CV pipeline (below)."]], "myths": [["The computer sees the picture the way we do.", "It only sees numbers; meaning comes from patterns learned across many examples."], ["More pixels always mean better recognition.", "Models often shrink images; good, varied training examples matter more."], ["Face recognition is neutral technology.", "It raises privacy and consent issues and can be less accurate for under-represented groups."]], "activities": [{"type": "order", "title": "Order the computer vision pipeline (Class XII)", "hint": "Tap the stages in order.", "items": ["Image acquisition", "Pre-processing", "Feature extraction", "Detection or segmentation", "Analysis and decision"]}, {"type": "sort", "title": "Which CV task?", "hint": "Sort each application.", "buckets": ["Classification", "Object detection", "Segmentation"], "items": [["Is this X-ray normal or not?", 0], ["Which flower species is this?", 0], ["Draw boxes around every car in the frame", 1], ["Count people entering the gate", 1], ["Colour exactly the pixels of the road for a self-driving car", 2], ["Outline the tumour region in an MRI scan", 2]]}, {"type": "widget", "name": "conv", "title": "Convolution and edge detection"}], "quiz": [["A grayscale pixel with value 0 is", ["white", "black", "red", "transparent"], 1, "0 is black, 255 is white."], ["How many numbers does one RGB pixel store?", ["1", "2", "3", "255"], 2, "Red, green and blue."], ["Drawing boxes around each car in an image is", ["classification", "object detection", "regression", "clustering"], 1, "What and where."], ["Max pooling a 2×2 block [3, 9, 4, 1] gives", ["17", "9", "4.25", "1"], 1, "Keep the largest value."], ["Which comes first in the CV pipeline?", ["Feature extraction", "Image acquisition", "Analysis", "Segmentation"], 1, "First capture the image."], ["A 3×3 kernel on an 8×8 image with no padding gives an output of", ["8×8", "6×6", "5×5", "3×3"], 1, "8 − 3 + 1 = 6."]], "c": "#16a34a"}, {"id": "m8", "code": "M8", "title": "Natural Language Processing and Chatbots", "hours": 4, "c": "#0891b2", "locked": true}, {"id": "m9", "code": "M9", "title": "Neural Networks and Generative AI", "hours": 5, "c": "#9333ea", "locked": true}]}, {"id": "R", "short": "Track 3", "kicker": "Track 3 · 2 modules · 8 h", "title": "Track 3: Responsible and Generative AI in the Classroom", "c": "#e11d48", "c2": "#c026d3", "desc": "Ethics, bias, privacy and digital citizenship, and using generative AI as a teacher with clear integrity rules.", "pills": ["M10", "M11"], "units": [{"id": "m10", "code": "M10", "title": "AI Ethics, Bias, Privacy and Digital Citizenship", "hours": 4, "c": "#e11d48", "locked": true}, {"id": "m11", "code": "M11", "title": "Generative AI for Teachers: Prompting and Integrity", "hours": 4, "c": "#c026d3", "locked": true}]}, {"id": "P", "short": "Track 4", "kicker": "Track 4 · 3 modules · 12 h", "title": "Track 4: Pedagogy and Assessment", "c": "#0f766e", "c2": "#4f46e5", "desc": "Teaching AI hands-on, assessing practical work and viva, and mentoring projects and the capstone.", "pills": ["M12", "M13", "M14"], "units": [{"id": "m12", "code": "M12", "title": "Teaching AI Hands-on: Unplugged → No-code → Python", "hours": 4, "c": "#4f46e5", "locked": true}, {"id": "m13", "code": "M13", "title": "Assessment: Practical File, Lab Test and Viva", "hours": 4, "c": "#0f766e", "locked": true}, {"id": "m14", "code": "M14", "title": "Mentoring Projects and the Capstone", "hours": 4, "c": "#b45309", "locked": true}]}, {"id": "L", "short": "Visual Labs", "kicker": "Hands-on · 9 labs", "title": "Visual Labs for Teachers", "c": "#4d7c0f", "c2": "#16a34a", "desc": "Try every lab as your students will, then use the facilitation tips, teacher competencies and trainer questions.", "pills": ["9 labs", "Facilitation tips", "Competencies", "Viva"], "labs": [{"id": "l1", "title": "Data to Decision Lab", "sub": "M4 · Data literacy · Classes VII–IX, XI", "c": "#0d9488", "locked": true}, {"id": "l2", "title": "Teach a Machine Lab", "sub": "M5 · M10 · Labels, balance and splits · Classes VII–VIII", "c": "#ea580c", "locked": true}, {"id": "l3", "title": "Predictive Models Lab", "sub": "M5 · Regression, k-NN, k-means · Classes VII, X, XI", "c": "#2563eb", "locked": true}, {"id": "l4", "title": "Model Evaluation Lab", "sub": "M6 · Confusion matrix, metrics, MSE · Classes X, XII", "c": "#7c3aed", "locked": true}, {"id": "l5", "title": "Computer Vision Lab", "sub": "M7 · Pixels, RGB, convolution · Classes VII–X, XII", "intro": "Draw with pixels, mix RGB colours, apply convolution kernels and pooling: how a machine turns an image into numbers and features.", "widgets": ["pixelart", "rgb", "conv", "pool"], "tips": ["Start with Binary Art (XII Unit 3) as pixel art in Class VII–VIII.", "Ask students to predict the kernel output before running it.", "Link pooling to ‘making a thumbnail that keeps the important parts’."], "assess": ["Explains images as grids of numbers.", "Distinguishes grayscale and RGB storage.", "Predicts and explains the result of an edge kernel.", "Explains why pooling reduces size but keeps features.", "Connects the steps to the CNN and the CV pipeline."], "viva": [["How many values does a 10 × 10 RGB image store?", "10 × 10 × 3 = 300 values."], ["What does an edge-detection kernel find?", "Places where brightness changes sharply."], ["Why is max pooling useful?", "It makes the image smaller and faster to process while keeping the strongest features."]], "c": "#16a34a"}, {"id": "l6", "title": "Language and Chatbot Lab", "sub": "M8 · Bag of words, TF-IDF, sentiment, bots · Classes X–XII", "c": "#0891b2", "locked": true}, {"id": "l7", "title": "Neural Networks and GenAI Lab", "sub": "M9 · Neuron, next-word model, probability · Classes IX–XII", "c": "#9333ea", "locked": true}, {"id": "l8", "title": "Prompt Studio for Teachers", "sub": "M11 · Role, task, context, format, constraints", "intro": "Build structured prompts for lesson plans, questions, rubrics and feedback; check them against a quality checklist; and plan how to verify the output.", "widgets": ["prompt"], "tips": ["Start from a real lesson you will teach next week.", "Always generate the answer key and check it yourself.", "Keep student names and marks out of every prompt."], "assess": ["Writes a prompt with role, task, context, format and constraints.", "Iterates on a first draft with a specific follow-up.", "Verifies facts and answer keys before classroom use.", "Protects student privacy in prompts.", "Explains a classroom policy for student GenAI use."], "viva": [["Which part of a prompt sets the output layout?", "The format, for example ‘a table with an answer key’."], ["How do you check GenAI-made MCQs?", "Solve each one, check that only one option is right, and confirm facts with the textbook."], ["What is an AI-resilient task?", "A task built on local data, reflection and visible process, so copying AI output does not help."]], "c": "#c026d3"}, {"id": "l9", "title": "Capstone Mentoring Studio", "sub": "M3 · M14 · Problem canvas, project canvas, rubric · Classes IX–XII", "c": "#b45309", "locked": true}], "note": ["How to use these labs in a training session", "Work in pairs: one teacher plays the student, the other the facilitator, then swap. Tick the competencies you can demonstrate and explain; use the trainer questions as a closing viva."]}]}}, "ladder": [{"s": "AI concepts and domains", "c": "#ea580c", "steps": ["Three domains; everyday AI", "AI in Indian sectors", "AI, ML, DL; types of learning", "Domains as project start", "Evolution, types, terminology, careers", "Domains in Orange add-ons"]}, {"s": "Computer vision", "c": "#16a34a", "steps": ["CV as a domain", "Image classifiers in Teachable Machine", "GenAI images (awareness)", "Pixels, RGB, convolution, pooling, CNN", "—", "CV pipeline, Binary Art, OpenCV"]}, {"s": "Ethics and citizenship", "c": "#e11d48", "steps": ["Bias, privacy, digital citizenship", "Fairness, responsible AI", "Moral issues, privacy, bias", "Ethical frameworks, bioethics", "Five pillars, bias mitigation, AI policies", "GenAI ethics, honest data stories"]}], "classColors": {"VII": "#d97706", "VIII": "#2563eb", "IX": "#0d9488", "X": "#7c3aed", "XI": "#db2777", "XII": "#e11d48"}, "classBase": "https://git-kaushal.github.io/Mind-Map-and-Visual-Labs/", "classFiles": {"VII": "class-seven.html", "VIII": "class-eight.html", "IX": "class-nine.html", "X": "class-ten.html"}, "links": {"test": "training-assessment.html", "trainer": "trainer-view.html"}};
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const W = {};                       /* widget registry: name -> function(el, color, cfg) */
+const PROG = {quiz: {}, check: {}, prog: {}};   /* progress for this visit only */
+const cssC = (c, c2) => `--c:${c};--c2:${c2 || c}`;
+const go = h => { location.hash = "#/" + h; };
+let CID = "X";                      /* current class */
+const CLS = id => DATA.classes.find(c => c.id === id);
+const CL = () => DATA.C[CID];
+const PART = id => CL().parts.find(p => p.id === id);
+function crumbs(list){
+  return `<nav class="crumbs">` + list.map((x, i) => (i ? `<span class="sep">›</span>` : "") + `<a href="#/${x[0]}" style="--c:${x[2]}">${esc(x[1])}</a>`).join("") + `</nav>`;
+}
+const baseCrumbs = () => DATA.single ? [["", CLS(CID).name, CLS(CID).c]] : [["", "Home", "#ea580c"], [CID, CLS(CID).name, CLS(CID).c]];
+const pills = (a, cls) => a.map(t => `<span class="${cls || "pill"}">${esc(t)}</span>`).join("");
+
+/* ---------- pages ---------- */
+function pageHome(){
+  return `<section class="hero" style="${cssC("#ea580c", "#db2777")}"><h2>AI Education for CBSE students</h2><p>Choose your class. Each class opens its units, interactive labs, quizzes and a mind map of the curriculum.</p></section>
+  <div class="grid big">` + DATA.classes.filter(c => !c.extra).map(classCard).join("") + `</div>` +
+  (DATA.classes.some(c => c.extra) ? `<section class="hero" style="${cssC("#0f766e", "#4338ca")};margin-top:18px;padding:14px 18px"><h2 style="font-size:20px">Beyond the classroom</h2><p>Advanced sections for teachers and aspirants preparing for higher-level examinations.</p></section>
+  <div class="grid big">` + DATA.classes.filter(c => c.extra).map(classCard).join("") + `</div>` : "");
+}
+function classCard(c){
+  return c.active ?
+    `<a class="card" href="#/${c.id}" style="${cssC(c.c, c.c2)}"><span class="k">${esc(c.kicker)}</span><span class="cls">${c.id}</span><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p><div class="meta">${pills(c.tags)}</div></a>` :
+    `<div class="card lock" style="${cssC(c.c, c.c2)}"><span class="k">${esc(c.kicker)}</span><span class="cls">${c.id}</span><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p><div class="meta"><span class="pill">Coming soon</span></div></div>`;
+}
+function pageClass(){
+  const c = CLS(CID), X = CL();
+  return crumbs(baseCrumbs()) +
+  `<section class="hero" style="${cssC(c.c, c.c2)}"><h2>${esc(X.title)}</h2><p>${esc(X.summary)}</p><div class="chips">${pills(X.chips, "chip")}</div></section>
+  <div class="grid big">` + X.parts.map(p => `<a class="card" href="#/${CID}/${p.id}" style="${cssC(p.c, p.c2)}"><span class="k">${esc(p.kicker)}</span><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p><div class="meta">${pills(p.pills)}</div></a>`).join("") +
+  `<a class="card" href="#/${CID}/map" style="${cssC("#d97706", "#ca8a04")}"><span class="k">Overview</span><h3>Curriculum mind map</h3><p>The whole ${esc(c.name)} curriculum as an interactive, colour-coded mind map. Tap any branch to open or close it.</p><div class="meta"><span class="pill">${X.parts.length} branches</span></div></a>
+   <a class="card" href="#/${CID}/quiz" style="${cssC("#0891b2", "#2563eb")}"><span class="k">Test yourself</span><h3>${esc(c.name)} mixed quiz</h3><p>Twenty random questions from all units, with explanations.</p><div class="meta"><span class="pill">${allQ().length} questions in the bank</span></div></a></div>`;
+}
+function unitPills(u){
+  const a = [];
+  if (u.hours) a.push(u.hours + " h");
+  if (u.th) a.push("Theory " + u.th + " h");
+  if (u.pr) a.push("Practical " + u.pr + " h");
+  if (u.marks) a.push(u.marks + " marks"); else if (u.assess) a.push("Assessed through " + u.assess);
+  return a;
+}
+function pagePart(pid){
+  const p = PART(pid);
+  let h = crumbs(baseCrumbs().concat([[CID + "/" + pid, p.short, p.c]])) +
+    `<section class="hero" style="${cssC(p.c, p.c2)}"><h2>${esc(p.title)}</h2><p>${esc(p.desc)}</p><div class="chips">${pills(p.pills, "chip")}</div></section>`;
+  if (p.labs) return h + pageLabs(p);
+  h += `<div class="grid">` + p.units.map((u, i) => { const lab = u.code || "Unit " + (i + 1);
+    return u.locked ? `<div class="card lock" style="--c:${u.c}"><span class="k">${esc(lab)}</span><h3>${esc(u.title)}</h3><p>Available in the full edition.</p><div class="meta"><span class="pill">🔒 Full edition</span></div></div>` :
+    `<a class="card" href="#/${CID}/${pid}/${u.id}" style="--c:${u.c}"><span class="k">${esc(lab)}</span><h3>${esc(u.title)}</h3><p>${esc(u.outcomes[0])}</p><div class="meta">${pills(unitPills(u))}<span class="pill">${u.quiz.length} quiz Qs</span>${PROG.quiz[CID + u.id] != null ? `<span class="pill">Best ${PROG.quiz[CID + u.id]}/${u.quiz.length}</span>` : ""}</div></a>`; }).join("") + `</div>`;
+  const qs = p.units.filter(u => !u.locked).flatMap(u => u.quiz);
+  if (qs.length) h += `<section class="sec" style="--c:${p.c};margin-top:14px"><h3><span class="n">?</span>${esc(p.short)} quiz</h3><p class="mut">${Math.min(10, qs.length)} random questions from every unit here.</p><a class="btn p" style="--c:${p.c}" href="#/${CID}/${pid}/quiz">Start the ${esc(p.short)} quiz</a></section>`;
+  return h;
+}
+function pageUnit(pid, uid){
+  const p = PART(pid), i = p.units.findIndex(u => u.id === uid), u = p.units[i];
+  if (!u || u.locked) return pagePart(pid);
+  const lab = u.code || "Unit " + (i + 1);
+  let n = 0; const sec = (title, body) => `<section class="sec" style="--c:${u.c}"><h3><span class="n">${++n}</span>${title}</h3>${body}</section>`;
+  let h = crumbs(baseCrumbs().concat([[CID + "/" + pid, p.short, p.c], [CID + "/" + pid + "/" + uid, lab, u.c]])) +
+    `<section class="hero" style="${cssC(u.c, p.c)}"><h2>${esc(lab)}: ${esc(u.title)}</h2><div class="chips">${pills(unitPills(u), "chip")}</div></section>`;
+  h += sec("Learning outcomes", `<ul class="lo">${u.outcomes.map(o => `<li>${esc(o)}</li>`).join("")}</ul>`);
+  h += sec("Key concepts <span class=\"mut\" style=\"font-weight:400\">(tap to open)</span>", `<div class="topics">${u.topics.map(t => `<details class="topic"><summary>${esc(t[0])}</summary><div>${esc(t[1])}</div></details>`).join("")}</div>`);
+  const acts = u.activities || (u.activity ? [u.activity] : []);
+  acts.forEach((a, k) => { h += sec("Activity: " + esc(a.title), `<div id="act${k}"></div>`); });
+  if (u.tools && u.tools.length) h += sec("Suggested tools and activities from the curriculum", `<div class="links">${u.tools.map(t => `<a href="${t[1]}" target="_blank" rel="noopener">${esc(t[0])} ↗</a>`).join("")}</div>`);
+  h += sec("Quiz", `<div id="uq"></div>`);
+  const nb = p.units.filter(x => !x.locked), j = nb.indexOf(u);
+  h += `<div class="row" style="justify-content:space-between">${j > 0 ? `<a class="btn" style="--c:${nb[j - 1].c}" href="#/${CID}/${pid}/${nb[j - 1].id}">← ${esc(nb[j - 1].title)}</a>` : "<span></span>"}${j < nb.length - 1 ? `<a class="btn" style="--c:${nb[j + 1].c}" href="#/${CID}/${pid}/${nb[j + 1].id}">${esc(nb[j + 1].title)} →</a>` : ""}</div>`;
+  $("#app").innerHTML = h;
+  acts.forEach((a, k) => activity($("#act" + k), a, u.c));
+  quiz($("#uq"), u.quiz, u.c, CID + u.id);
+  return null;
+}
+function allQ(){ return CL().parts.filter(p => p.units).flatMap(p => p.units.filter(u => !u.locked).flatMap(u => u.quiz)); }
+function pageQuiz(pid){
+  const p = pid ? PART(pid) : null, col = p ? p.c : "#0891b2";
+  const qs = p ? p.units.filter(u => !u.locked).flatMap(u => u.quiz) : allQ(), n = p ? 10 : 20;
+  $("#app").innerHTML = crumbs(baseCrumbs().concat(p ? [[CID + "/" + pid, p.short, p.c]] : []).concat([[CID + (p ? "/" + pid : "") + "/quiz", "Quiz", col]])) +
+    `<section class="hero" style="${cssC(col, p ? p.c2 : "#2563eb")}"><h2>${p ? esc(p.short) + " quiz" : esc(CLS(CID).name) + " mixed quiz"}</h2><p>${Math.min(n, qs.length)} random questions. Each answer shows an explanation.</p></section><section class="sec" style="--c:${col}"><div id="pq"></div></section>`;
+  quiz($("#pq"), shuffle(qs).slice(0, n), col, CID + "q" + (pid || ""));
+  return null;
+}
+
+/* ---------- activities ---------- */
+function activity(el, a, c){
+  el.style.setProperty("--c", c);
+  if (a.type === "sort") return sortAct(el, a);
+  if (a.type === "order") return orderAct(el, a);
+  if (a.type === "widget") { if (W[a.name]) W[a.name](el, c, a.cfg || {}); else el.innerHTML = `<div class="lockbox">This activity is available in the full edition.</div>`; }
+}
+const BUCKC = ["#2563eb", "#16a34a", "#db2777", "#d97706", "#7c3aed", "#0891b2"];
+function sortAct(el, a){
+  let place = a.items.map(() => -1), sel = -1, checked = false; const order = shuffle(a.items.map((_, i) => i));
+  function draw(){
+    const chip = i => `<button class="it ${sel === i ? "sel" : ""} ${checked && place[i] >= 0 ? (place[i] === a.items[i][1] ? "good" : "bad") : ""}" data-i="${i}">${esc(a.items[i][0])}</button>`;
+    const right = place.filter((b, i) => b === a.items[i][1]).length;
+    el.innerHTML = `<p class="mut">${esc(a.hint || "")} Tap an item, then a box. To move a placed item, tap it, then another box or this top area.</p><div class="pool">${order.filter(i => place[i] < 0).map(chip).join("") || `<span class="mut">All items placed.</span>`}</div>
+      <div class="buckets">${a.buckets.map((b, k) => `<div class="bucket" data-b="${k}" style="--bc:${BUCKC[k % BUCKC.length]}"><b>${esc(b)}</b>${order.filter(i => place[i] === k).map(chip).join("")}</div>`).join("")}</div>
+      <div class="row" style="margin-top:10px"><button class="btn p" data-a="check">Check</button><button class="btn" data-a="reset">Reset</button>
+      <span>${checked ? (right === a.items.length ? `<span class="okc">All ${right} correct!</span>` : `<span class="noc">${right} / ${a.items.length} correct.</span> <span class="mut">Red items are in the wrong box.</span>`) : ""}</span></div>`;
+  }
+  el.onclick = e => {
+    const it = e.target.closest(".it"), bk = e.target.closest(".bucket"), pool = e.target.closest(".pool"), ac = e.target.closest("[data-a]");
+    if (ac) { if (ac.dataset.a === "check") checked = true; else { place = place.map(() => -1); checked = false; } sel = -1; draw(); return; }
+    if (it) { const i = +it.dataset.i;
+      if (sel >= 0 && sel !== i && bk) place[sel] = +bk.dataset.b, sel = -1;
+      else if (sel >= 0 && sel !== i && pool && place[sel] >= 0) place[sel] = -1, sel = -1;
+      else sel = sel === i ? -1 : i;
+      checked = false; draw(); return; }
+    if (bk && sel >= 0) { place[sel] = +bk.dataset.b; sel = -1; draw(); return; }
+    if (pool && sel >= 0) { place[sel] = -1; sel = -1; draw(); }
+  };
+  draw();
+}
+function orderAct(el, a){
+  const mix = shuffle(a.items.map((_, i) => i)); let seq = [], checked = false;
+  function draw(){
+    const ok = checked && seq.every((v, i) => v === i) && seq.length === a.items.length;
+    el.innerHTML = `<p class="mut">${esc(a.hint || "")}</p><div class="pool">${mix.filter(i => !seq.includes(i)).map(i => `<button class="it" data-i="${i}">${esc(a.items[i])}</button>`).join("") || `<span class="mut">All chosen.</span>`}</div>
+      <div class="seq">${seq.map((v, k) => `<span class="it ${checked ? (v === k ? "good" : "bad") : ""}" data-n="${k + 1}">${esc(a.items[v])}</span>${k < seq.length - 1 ? "<span>→</span>" : ""}`).join("") || `<span class="mut">Your order appears here.</span>`}</div>
+      <div class="row"><button class="btn p" data-a="check" ${seq.length < a.items.length ? "disabled" : ""}>Check</button><button class="btn" data-a="undo">Undo</button><button class="btn" data-a="reset">Reset</button>
+      <span>${checked ? (ok ? `<span class="okc">Correct order!</span>` : `<span class="noc">Not yet.</span> <span class="mut">Red items are in the wrong position.</span>`) : ""}</span></div>`;
+  }
+  el.onclick = e => {
+    const it = e.target.closest("button.it"), ac = e.target.closest("[data-a]");
+    if (it) { seq.push(+it.dataset.i); checked = false; draw(); }
+    if (ac) { const t = ac.dataset.a; if (t === "check") checked = true; if (t === "undo") { seq.pop(); checked = false; } if (t === "reset") { seq = []; checked = false; } draw(); }
+  };
+  draw();
+}
+
+/* ---------- quiz ---------- */
+function quiz(el, qs, c, key){
+  el.style.setProperty("--c", c);
+  let i = 0, score = 0, ans = null; const order = qs.map(q => ({q, o: shuffle(q[1].map((t, k) => k))}));
+  function draw(){
+    if (i >= order.length) {
+      PROG.quiz[key] = Math.max(PROG.quiz[key] || 0, score);
+      const pct = Math.round(score / order.length * 100);
+      el.innerHTML = `<div class="qcard"><div class="q">Score: ${score} / ${order.length} (${pct}%)</div><div class="bar"><i style="width:${pct}%"></i></div><p>${pct >= 80 ? "Excellent work!" : pct >= 50 ? "Good. Revise the explanations of the questions you missed." : "Revise the key concepts and try again."}</p><button class="btn p" data-r="1">Try again</button></div>`;
+      return;
+    }
+    const {q, o} = order[i];
+    el.innerHTML = `<div class="qcard"><div class="qn">Question ${i + 1} of ${order.length} · Score ${score}</div><div class="bar"><i style="width:${i / order.length * 100}%"></i></div><div class="q">${esc(q[0])}</div>` +
+      o.map(k => `<button class="opt ${ans == null ? "" : k === q[2] ? "right" : k === ans ? "wrong" : ""}" data-k="${k}" ${ans == null ? "" : "disabled"}>${esc(q[1][k])}</button>`).join("") +
+      (ans == null ? "" : `<p><b class="${ans === q[2] ? "okc" : "noc"}">${ans === q[2] ? "Correct." : "Not quite."}</b> ${esc(q[3] || "")}</p><button class="btn p" data-n="1">${i < order.length - 1 ? "Next question" : "See score"}</button>`) + `</div>`;
+  }
+  el.onclick = e => {
+    const b = e.target.closest("[data-k]"), nx = e.target.closest("[data-n]"), r = e.target.closest("[data-r]");
+    if (b && ans == null) { ans = +b.dataset.k; if (ans === order[i].q[2]) score++; draw(); }
+    if (nx) { i++; ans = null; draw(); }
+    if (r) { i = 0; score = 0; ans = null; order.forEach(x => x.o = shuffle(x.o)); draw(); }
+  };
+  draw();
+}
+
+/* ---------- lab parts ---------- */
+function pageLabs(p){
+  const open = p.labs.filter(l => !l.locked), total = open.reduce((s, l) => s + l.assess.length, 0), done = open.reduce((s, l) => s + (PROG.check[CID + l.id] || []).filter(Boolean).length, 0);
+  let n = 0, h = "";
+  if (p.marksC) h += `<section class="sec" style="--c:${p.c}"><h3><span class="n">${++n}</span>Marks distribution (practical: 50 marks)</h3><div class="tw"><table><tr><th class="l">Component</th><th>Marks</th></tr>${p.marksC.map(r => `<tr><td class="l">${esc(r[0])}</td><td>${r[1]}</td></tr>`).join("")}<tr><th class="l">Total</th><th>50</th></tr></table></div></section>`;
+  h += `<section class="sec" style="--c:${p.c}"><h3><span class="n">${++n}</span>Your progress in this visit</h3><div class="kpis" style="--c:${p.c}">${p.programs ? `<div class="kpi"><b>${Object.keys(PROG.prog).length} / ${p.nprog}</b><span>practical-file programs run</span></div>` : ""}<div class="kpi"><b>${done} / ${total}</b><span>assessment points ticked</span></div></div><p class="mut">Progress is kept while this page stays open.</p></section>`;
+  h += `<div class="grid">` + p.labs.map((l, i) => l.locked ?
+    `<div class="card lock" style="--c:${l.c}"><span class="k">Lab ${i + 1}</span><h3>${esc(l.title)}</h3><p>${esc(l.sub)}</p><div class="meta"><span class="pill">🔒 Full edition</span></div></div>` :
+    `<a class="card" href="#/${CID}/${p.id}/${l.id}" style="--c:${l.c}"><span class="k">Lab ${i + 1}</span><h3>${esc(l.title)}</h3><p>${esc(l.sub)}</p><div class="meta"><span class="pill">${l.assess.length} assessment points</span><span class="pill">${l.viva.length} viva Qs</span></div></a>`).join("") + `</div>`;
+  if (p.sampleProjects) h += `<section class="sec" style="--c:${p.c2};margin-top:14px"><h3><span class="n">${++n}</span>Sample projects from the curriculum</h3><div class="tw"><table><tr><th class="l">Domain</th><th class="l">Project</th><th class="l">Tool / workflow</th><th class="l">Related SDG</th></tr>${p.sampleProjects.map(r => `<tr>${r.map(x => `<td class="l">${esc(x)}</td>`).join("")}</tr>`).join("")}</table></div>
+    <p><b>Field work options:</b> ${p.field.map(esc).join(" · ")}.</p><p><b>Student portfolio</b> (continued from Class IX): a record of AI activities, hackathons and competitions; at least 5 activities, each related to a Sustainable Development Goal.</p></section>`;
+  if (p.note) h += `<section class="sec" style="--c:${p.c2};margin-top:14px"><h3><span class="n">${++n}</span>${esc(p.note[0])}</h3><p>${esc(p.note[1])}</p></section>`;
+  return h;
+}
+function pageLab(pid, lid){
+  const p = PART(pid), i = p.labs.findIndex(l => l.id === lid), l = p.labs[i];
+  if (!l || l.locked) { $("#app").innerHTML = pagePart(pid); return null; }
+  const key = CID + l.id, ck = PROG.check[key] || (PROG.check[key] = l.assess.map(() => false));
+  let h = crumbs(baseCrumbs().concat([[CID + "/" + pid, p.short, p.c], [CID + "/" + pid + "/" + l.id, "Lab " + (i + 1), l.c]])) +
+    `<section class="hero" style="${cssC(l.c, p.c)}"><h2>${esc(l.title)}</h2><p>${esc(l.intro)}</p><div class="chips"><span class="chip">${esc(l.sub)}</span></div></section>`;
+  const items = (l.acts || []).map(a => ["act", a]).concat(l.widgets.map(w => ["w", w]));
+  items.forEach((x, k) => { h += `<section class="sec" style="--c:${l.c}">${x[0] === "act" ? `<h3><span class="n">${k + 1}</span>${esc(x[1].title)}</h3>` : ""}<div id="lw${k}"></div></section>`; });
+  h += `<section class="sec" style="--c:${l.c}"><h3><span class="n">✓</span>Assessment points</h3><p class="mut">What the teacher or examiner looks for. Tick each point when you can do it confidently.</p><ul class="check" id="ck">${l.assess.map((a, k) => `<li><label><input type="checkbox" data-k="${k}" ${ck[k] ? "checked" : ""}> <span>${esc(a)}</span></label></li>`).join("")}</ul><p id="ckn" class="mut"></p></section>`;
+  h += `<section class="sec" style="--c:${l.c}"><h3><span class="n">?</span>Viva voce practice</h3>${l.viva.map(v => `<details class="viva"><summary>${esc(v[0])}</summary><p>${esc(v[1])}</p></details>`).join("")}</section>`;
+  $("#app").innerHTML = h;
+  items.forEach((x, k) => { const el = $("#lw" + k); el.style.setProperty("--c", l.c);
+    if (x[0] === "act") activity(el, x[1], l.c); else if (W[x[1]]) W[x[1]](el, l.c, {}); else el.innerHTML = `<div class="lockbox">Available in the full edition.</div>`; });
+  const upd = () => { const m = ck.filter(Boolean).length; $("#ckn").textContent = `${m} of ${ck.length} points ticked.`; };
+  $("#ck").onchange = e => { ck[+e.target.dataset.k] = e.target.checked; upd(); }; upd();
+  return null;
+}
+
+/* ---------- router ---------- */
+function render(){
+  const r = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  let h = null;
+  if (DATA.single && r[0] !== DATA.single) r.unshift(DATA.single);   /* one-class file: every route belongs to that class */
+  if (!r.length || !DATA.C[r[0]]) h = pageHome();
+  else {
+    CID = r[0];
+    if (r.length === 1) h = pageClass();
+    else if (r[1] === "map") h = pageMap();
+    else if (r[1] === "quiz") h = pageQuiz(null);
+    else if (!PART(r[1])) h = pageClass();
+    else if (r.length === 2) h = pagePart(r[1]);
+    else if (r[2] === "quiz") h = pageQuiz(r[1]);
+    else if (PART(r[1]).labs) h = pageLab(r[1], r[2]);
+    else h = pageUnit(r[1], r[2]);
+  }
+  if (h !== null) $("#app").innerHTML = h;
+  if (r[1] === "map" && DATA.C[r[0]]) drawMap();
+  window.scrollTo(0, 0);
+}
+$("#home").onclick = () => go("");
+window.addEventListener("hashchange", render);
+
+/* ---------- mind map ---------- */
+const MMS = {};
+function buildTree(){
+  const X = CL(), node = (t, c, kids, route) => ({t, c, kids: kids || [], route, open: false});
+  const parts = X.parts.map(p => {
+    let kids;
+    if (p.units) kids = p.units.map((u, i) => node(`${u.code || "Unit " + (i + 1)}: ${u.title}` + (u.locked ? " 🔒" : ""), u.c, u.locked ? [] : u.topics.map(t => node(t[0], u.c)), u.locked ? null : `${CID}/${p.id}/${u.id}`));
+    else kids = (p.marksC ? [node("Marks distribution (50)", p.c, p.marksC.map(r => node(`${r[0]}: ${r[1]} marks`, p.c)))] : [])
+      .concat(p.labs.map(l => node(l.title + (l.locked ? " 🔒" : ""), l.c, l.locked ? [] : (l.id === "c1" ? p.programs.map((g, k) => node(`P${k + 1}. ${g.t}`, l.c)) : l.assess.map(a => node(a, l.c))), l.locked ? null : `${CID}/${p.id}/${l.id}`)))
+      .concat(p.sampleProjects ? [node("Sample projects", p.c2, p.sampleProjects.map(r => node(`${r[0]}: ${r[1]}`, p.c2)))] : []);
+    return node(p.title, p.c, kids, `${CID}/${p.id}`);
+  });
+  const root = node(X.mapTitle, "#ea580c", parts, CID);
+  root.open = true; parts.forEach(p => p.open = true);
+  return root;
+}
+function pageMap(){
+  return crumbs(baseCrumbs().concat([[CID + "/map", "Mind map", "#d97706"]])) +
+    `<section class="hero" style="${cssC("#d97706", "#ea580c")}"><h2>${esc(CLS(CID).name)} curriculum mind map</h2><p>Tap a box to open or close its branch. Double-tap (or use the ↗ link) to go to that unit or lab. Scroll sideways to see more.</p></section>
+    <div class="row" style="margin-bottom:8px;--c:#d97706"><button class="btn" data-lv="1">Parts only</button><button class="btn" data-lv="2">Show units</button><button class="btn" data-lv="3">Show topics</button><button class="btn p" data-lv="9">Expand all</button></div>
+    <div class="mmwrap" id="mm"></div>`;
+}
+function wrap(t, n){ const w = t.split(" "), out = []; let line = ""; w.forEach(x => { if ((line + " " + x).trim().length > n && line) { out.push(line); line = x; } else line = (line + " " + x).trim(); }); if (line) out.push(line); return out; }
+function drawMap(){
+  const MM = MMS[CID] || (MMS[CID] = buildTree());
+  document.querySelectorAll("[data-lv]").forEach(b => b.onclick = () => { const lv = +b.dataset.lv; (function f(n, d){ n.open = d < lv; n.kids.forEach(k => f(k, d + 1)); })(MM, 0); drawMap(); });
+  const COLW = [230, 250, 270, 300], LH = 15, PADY = 8;
+  const colX = d => 10 + COLW.slice(0, d).reduce((a, b) => a + b, 0) + d * 40;
+  let y = 10; const nodes = [], links = [];
+  (function lay(n, d, parent){
+    const maxc = Math.round((COLW[Math.min(d, 3)] - 30) / 7.2);
+    n.lines = wrap(n.t, maxc); n.h = n.lines.length * LH + 12; n.w = COLW[Math.min(d, 3)]; n.d = d; n.x = colX(d);
+    const vis = n.open ? n.kids : [];
+    if (!vis.length) { n.y = y; y += n.h + PADY; }
+    else { vis.forEach(k => lay(k, d + 1, n)); const f = vis[0], l = vis[vis.length - 1]; n.y = Math.max((f.y + f.h / 2 + l.y + l.h / 2) / 2 - n.h / 2, 0); if (n.y + n.h + PADY > y) y = n.y + n.h + PADY; }
+    nodes.push(n); if (parent) links.push([parent, n]);
+  })(MM, 0, null);
+  const W2 = Math.max(...nodes.map(n => n.x + n.w)) + 20, H = y + 10;
+  let s = links.map(([a, b]) => { const x1 = a.x + a.w, y1 = a.y + a.h / 2, x2 = b.x, y2 = b.y + b.h / 2, mx = (x1 + x2) / 2;
+    return `<path d="M${x1} ${y1}C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}" fill="none" stroke="${b.c}" stroke-width="${b.d < 2 ? 3 : 1.8}" opacity=".75"/>`; }).join("");
+  nodes.forEach((n, i) => {
+    const filled = n.d <= 2, fill = filled ? n.c : "#ffffff", tc = filled ? "#ffffff" : "#1f2937";
+    s += `<g class="mmnode" data-i="${i}"><rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="9" fill="${fill}" stroke="${n.c}" stroke-width="${filled ? 0 : 1.6}"/>` +
+      n.lines.map((l, k) => `<text x="${n.x + 10}" y="${n.y + 18 + k * LH}" fill="${tc}" ${n.d <= 1 ? 'font-weight="700"' : n.d === 2 ? 'font-weight="600"' : ""}>${esc(l)}</text>`).join("") +
+      (n.kids.length ? `<circle cx="${n.x + n.w}" cy="${n.y + n.h / 2}" r="8" fill="#fff" stroke="${n.c}" stroke-width="2"/><text x="${n.x + n.w}" y="${n.y + n.h / 2 + 4}" text-anchor="middle" fill="${n.c}" font-weight="700">${n.open ? "−" : "+"}</text>` : "") +
+      (n.route ? `<a href="#/${n.route}"><text x="${n.x + n.w - 18}" y="${n.y + 15}" fill="${tc}" font-weight="700">↗</text></a>` : "") + `</g>`;
+  });
+  const el = $("#mm"); if (!el) return;
+  el.innerHTML = `<svg width="${W2}" height="${H}" viewBox="0 0 ${W2} ${H}">${s}</svg>`;
+  el.querySelectorAll(".mmnode").forEach(g => {
+    const n = nodes[+g.dataset.i];
+    g.addEventListener("click", e => { if (e.target.closest("a")) return; if (n.kids.length) { n.open = !n.open; drawMap(); } });
+    g.addEventListener("dblclick", () => { if (n.route) go(n.route); });
+  });
+}
+
+/* ---------- shared helpers for widgets ---------- */
+const f2 = (x, d) => (+x).toFixed(d == null ? 2 : d);
+const pyf = x => Number.isInteger(x) ? x + ".0" : String(+x.toPrecision(15));   /* Python-style float repr */
+const nums = s => s.split(/[\s,]+/).filter(Boolean).map(Number).filter(v => !isNaN(v));
+function rng(seed){ let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+function gauss(r){ let u = 0, v = 0; while (!u) u = r(); while (!v) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+/* sample data modelled on the Palmer Penguins dataset (synthetic values) */
+const PENG = (() => {
+  const r = rng(2026), S = [["Adelie", ["Torgersen", "Biscoe", "Dream"], 38.8, 2.6, 18.3, 1.2, 190, 6.5, 3700, 450], ["Chinstrap", ["Dream"], 48.8, 3.3, 18.4, 1.1, 196, 7.1, 3730, 380], ["Gentoo", ["Biscoe"], 47.5, 3.0, 15.0, 1.0, 217, 6.5, 5076, 500]];
+  const rows = [];
+  for (let k = 0; k < 20; k++) S.forEach(s => { const sex = r() < .5 ? "male" : "female", m = sex === "male" ? 1 : -1;
+    rows.push({species: s[0], island: s[1][Math.floor(r() * s[1].length)], bill_length_mm: +(s[2] + m * 1.2 + gauss(r) * s[3] * .8).toFixed(1), bill_depth_mm: +(s[4] + m * .5 + gauss(r) * s[5] * .8).toFixed(1),
+      flipper_length_mm: Math.round(s[6] + m * 3 + gauss(r) * s[7] * .8), body_mass_g: Math.round((s[8] + m * 300 + gauss(r) * s[9] * .7) / 25) * 25, sex}); });
+  return rows;
+})();
+const PCOL = {Adelie: "#f97316", Chinstrap: "#a855f7", Gentoo: "#0d9488"};
+const FEAT = [["bill_length_mm", "Bill length (mm)"], ["bill_depth_mm", "Bill depth (mm)"], ["flipper_length_mm", "Flipper length (mm)"], ["body_mass_g", "Body mass (g)"]];
+/* ---------- SVG charts ---------- */
+function niceTicks(a, b, n){ if (a === b) { a -= 1; b += 1; } const r = b - a, p = Math.pow(10, Math.floor(Math.log10(r / (n || 5)))), m = r / (n || 5) / p, st = (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p, t = [];
+  for (let v = Math.floor(a / st) * st; v <= Math.ceil(b / st) * st + st * 1e-9; v += st) t.push(+v.toFixed(10)); return t; }
+function axes(xs, ys, o){
+  o = o || {}; const W = o.w || 360, H = o.h || 240, l = 46, r = W - 14, t = 16, b = H - 36;
+  const tx = niceTicks(Math.min(...xs, o.x0 ?? Infinity), Math.max(...xs, o.x1 ?? -Infinity)), ty = niceTicks(Math.min(...ys, o.y0 ?? Infinity), Math.max(...ys, o.y1 ?? -Infinity));
+  const X0 = tx[0], X1 = tx[tx.length - 1], Y0 = ty[0], Y1 = ty[ty.length - 1], X = v => l + (v - X0) / (X1 - X0) * (r - l), Y = v => b - (v - Y0) / (Y1 - Y0) * (b - t);
+  let s = tx.map(v => `<path d="M${X(v)} ${t}V${b}" stroke="#e5e7eb"/><text x="${X(v)}" y="${b + 14}" text-anchor="middle" font-size="10" fill="#334155">${+v.toPrecision(6)}</text>`).join("") +
+    ty.map(v => `<path d="M${l} ${Y(v)}H${r}" stroke="#e5e7eb"/><text x="${l - 5}" y="${Y(v) + 3}" text-anchor="end" font-size="10" fill="#334155">${+v.toPrecision(6)}</text>`).join("") +
+    `<path d="M${l} ${t}V${b}H${r}" stroke="#334155" fill="none"/>` + (o.xl ? `<text x="${(l + r) / 2}" y="${H - 4}" text-anchor="middle" font-size="11" font-weight="600" fill="#1f2937">${esc(o.xl)}</text>` : "") +
+    (o.yl ? `<text transform="translate(11 ${(t + b) / 2}) rotate(-90)" text-anchor="middle" font-size="11" font-weight="600" fill="#1f2937">${esc(o.yl)}</text>` : "") + (o.title ? `<text x="${(l + r) / 2}" y="11" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2937">${esc(o.title)}</text>` : "");
+  return {s, X, Y, W, H, l, r, t, b};
+}
+const svgWrap = (A, inner) => `<svg class="cv" viewBox="0 0 ${A.W} ${A.H}" width="${A.W}">${A.s}${inner}</svg>`;
+function barChart(labels, vals, o){
+  o = o || {}; const W = 360, H = 240, l = 46, r = W - 14, t = 16, b = H - 36, ty = niceTicks(0, Math.max(...vals, 1)), Y1 = ty[ty.length - 1], Y = v => b - v / Y1 * (b - t), bw = (r - l) / Math.max(labels.length, 1);
+  let s = ty.map(v => `<path d="M${l} ${Y(v)}H${r}" stroke="#e5e7eb"/><text x="${l - 5}" y="${Y(v) + 3}" text-anchor="end" font-size="10" fill="#334155">${v}</text>`).join("") + `<path d="M${l} ${t}V${b}H${r}" stroke="#334155" fill="none"/>`;
+  labels.forEach((lb, i) => { const x = l + i * bw + bw * .18, y = Y(Math.max(0, vals[i])); s += `<rect x="${x}" y="${y}" width="${bw * .64}" height="${b - y}" fill="${o.color || "#f97316"}"/><text x="${x + bw * .32}" y="${b + 14}" text-anchor="middle" font-size="10" fill="#334155">${esc(String(lb).length > Math.max(4, Math.floor(bw / 6)) ? String(lb).slice(0, Math.max(3, Math.floor(bw / 6) - 1)) + "…" : lb)}</text>`; });
+  if (o.yl) s += `<text transform="translate(11 ${(t + b) / 2}) rotate(-90)" text-anchor="middle" font-size="11" font-weight="600" fill="#1f2937">${esc(o.yl)}</text>`;
+  return `<svg class="cv" viewBox="0 0 ${W} ${H}" width="${W}">${s}</svg>`;
+}
+function pieChart(labels, vals, title){
+  const tot = vals.reduce((a, b) => a + b, 0), C = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]; let a0 = -Math.PI / 2, s = "";
+  vals.forEach((v, i) => { const a1 = a0 + v / tot * 2 * Math.PI, big = a1 - a0 > Math.PI ? 1 : 0, cx = 150, cy = 125, R = 85;
+    s += `<path d="M${cx} ${cy}L${cx + R * Math.cos(a0)} ${cy + R * Math.sin(a0)}A${R} ${R} 0 ${big} 1 ${cx + R * Math.cos(a1)} ${cy + R * Math.sin(a1)}Z" fill="${C[i % 6]}" stroke="#fff"/>`;
+    const am = (a0 + a1) / 2; s += `<text x="${cx + R * .6 * Math.cos(am)}" y="${cy + R * .6 * Math.sin(am) + 4}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">${(v / tot * 100).toFixed(1)}%</text><text x="${cx + (R + 16) * Math.cos(am)}" y="${cy + (R + 16) * Math.sin(am) + 4}" text-anchor="${Math.cos(am) > 0 ? "start" : "end"}" font-size="11" fill="#1f2937">${esc(labels[i])}</text>`; a0 = a1; });
+  return `<svg class="cv" viewBox="0 0 300 240" width="300"><text x="150" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#1f2937">${esc(title || "")}</text>${s}</svg>`;
+}
+/* ---------- tiny synthetic images (for the CV programs) ---------- */
+function synthImage(kind, w, h){
+  const d = new Uint8ClampedArray(w * h * 4);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let r, g, b; const i = (y * w + x) * 4;
+    if (kind === "flower") { const cx = w / 2, cy = h / 2, dx = x - cx, dy = y - cy, rr = Math.hypot(dx, dy), an = Math.atan2(dy, dx), pet = h * .32 * (0.65 + 0.35 * Math.cos(5 * an));
+      if (rr < h * .09) { r = 250; g = 204; b = 21; } else if (rr < pet) { r = 236; g = 72; b = 153; } else if (y > h * .78) { r = 34; g = 139; b = 34; } else { r = 186; g = 230; b = 253; } }
+    else { const t = y / h; r = 255; g = Math.round(120 + 100 * t); b = Math.round(60 + 40 * t); if (Math.hypot(x - w * .5, y - h * .62) < h * .2 && y < h * .62) { r = 255; g = 230; b = 120; } if (y > h * .62) { r = 30; g = 64; b = 175; } }
+    d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255; }
+  return d;
+}
+function drawImg(canvas, data, w, h, mode){
+  canvas.width = w; canvas.height = h; const ctx = canvas.getContext("2d"), im = ctx.createImageData(w, h);
+  for (let i = 0; i < data.length; i += 4) { let r = data[i], g = data[i + 1], b = data[i + 2];
+    if (mode === "bgr") [r, b] = [b, r]; if (mode === "gray") r = g = b = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+    im.data[i] = r; im.data[i + 1] = g; im.data[i + 2] = b; im.data[i + 3] = 255; }
+  ctx.putImageData(im, 0, 0);
+}
+/* ---------- NLP helpers ---------- */
+const STOP = new Set("a an the and or but if is are was were be been am to of in on at by for with from as it its this that these those i you he she we they me him her us them my your our their do does did have has had will would can could should so than too very not no just into about over after before up down out also there here what which who whom when where why how all any each few more most other some such only own same s t".split(" "));
+function stem(w){ const rules = [["ies", "i"], ["ing", ""], ["ed", ""], ["es", ""], ["ly", ""], ["s", ""]]; for (const [a, b] of rules) if (w.length > a.length + 2 && w.endsWith(a)) return w.slice(0, -a.length) + b; return w; }
+function normalise(text, o){
+  let toks = (text.match(/[A-Za-z0-9']+|[^\sA-Za-z0-9']/g) || []);
+  if (o.punct) toks = toks.filter(t => /^[A-Za-z']+$/.test(t)).map(t => t.replace(/'/g, ""));
+  if (o.lower) toks = toks.map(t => t.toLowerCase());
+  if (o.stop) toks = toks.filter(t => !STOP.has(t.toLowerCase()));
+  if (o.stem) toks = toks.map(t => stem(t.toLowerCase()));
+  return toks;
+}
+function bowTable(docs){
+  const vocab = []; docs.forEach(d => d.forEach(w => { if (!vocab.includes(w)) vocab.push(w); }));
+  const M = docs.map(d => vocab.map(v => d.filter(w => w === v).length)), DF = vocab.map((_, j) => M.filter(r => r[j] > 0).length), N = docs.length;
+  const IDF = DF.map(d => Math.log10(N / d));
+  return {vocab, M, DF, IDF, TFIDF: M.map(r => r.map((tf, j) => tf * IDF[j]))};
+}
+function hiPy(code){
+  return esc(code).replace(/(#.*)$/gm, '<span class="cm">$1</span>')
+    .replace(/(&#39;|')([^'\n]*)(')/g, '<span class="st">\'$2\'</span>').replace(/(&quot;)([^\n]*?)(&quot;)/g, '<span class="st">&quot;$2&quot;</span>')
+    .replace(/\b(import|from|as|for|in|if|elif|else|while|def|return|print|range|len|and|or|not|True|False|None)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b(\d+\.?\d*)\b/g, '<span class="nu">$1</span>');
+}
+
+function lineChart(labels, series, o){
+  o = o || {}; const all = series.flatMap(s => s.v), A = axes([0, labels.length - 1], all.concat(o.zero ? [0] : []), Object.assign({w: 380, h: 250}, o));
+  const X = i => A.l + i * (A.r - A.l) / Math.max(1, labels.length - 1);
+  let s = A.s.replace(/<path d="M[\d.]+ \d+V\d+" stroke="#e5e7eb"\/><text[^>]*>[^<]*<\/text>/g, "");
+  labels.forEach((lb, i) => { if (labels.length <= 12 || i % 2 === 0) s += `<text x="${X(i)}" y="${A.b + 14}" text-anchor="middle" font-size="10" fill="#334155">${esc(lb)}</text>`; });
+  let inner = series.map(se => `<path d="M${se.v.map((v, i) => X(i) + " " + A.Y(v)).join("L")}" fill="none" stroke="${se.c}" stroke-width="2.5"/>` + se.v.map((v, i) => `<circle cx="${X(i)}" cy="${A.Y(v)}" r="3" fill="${se.c}"/>`).join("")).join("");
+  return `<svg class="cv" viewBox="0 0 ${A.W} ${A.H}" width="${A.W}">${s}${inner}</svg>`;
+}
+/* ---------- synthetic sales data for the IT/CS/AI data labs ---------- */
+const SALES = (() => {
+  const r = rng(417), C = ["Delhi", "Mumbai", "Chennai", "Kolkata", "Bengaluru"], P = [["Notebook", 60], ["Pen", 20], ["Calculator", 650], ["Bag", 900], ["Bottle", 250]], rows = [];
+  for (let i = 0; i < 60; i++) { const c = C[Math.floor(r() * 5)], p = P[Math.floor(r() * 5)], m = 1 + Math.floor(i / 10), d = 1 + Math.floor(r() * 28), u = Math.max(1, Math.round((p[1] > 500 ? 4 : 18) + gauss(r) * (p[1] > 500 ? 2 : 6)));
+    rows.push({order_id: 1001 + i, date: `2025-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`, city: c, product: p[0], units: u, price: p[1], revenue: u * p[1], rating: r() < .12 ? null : Math.min(5, Math.max(1, Math.round(3.6 + gauss(r) * .9)))}); }
+  return rows;
+})();
+const PRODUCTS = [{product: "Notebook", category: "Stationery", supplier: "PaperCo"}, {product: "Pen", category: "Stationery", supplier: "InkWorks"}, {product: "Calculator", category: "Electronics", supplier: "CalcTech"}, {product: "Bag", category: "Accessories", supplier: "CarryAll"}, {product: "Lamp", category: "Electronics", supplier: "BrightLtd"}];
+const isNA = v => v === null || v === undefined || (typeof v === "number" && isNaN(v));
+function dfTable(rows, cols, n, opt){
+  cols = cols || (rows[0] ? Object.keys(rows[0]).filter(k => k !== "__i") : []); const show = n ? rows.slice(0, n) : rows; opt = opt || {};
+  return `<div class="tw"><table><tr>${opt.index === false ? "" : "<th></th>"}${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr>${show.map((r, i) => `<tr>${opt.index === false ? "" : `<td class="mut">${r.__i ?? i}</td>`}${cols.map(c => { const v = r[c]; return `<td${isNA(v) ? ' style="color:#dc2626;font-style:italic"' : ""}>${isNA(v) ? "NaN" : esc(typeof v === "number" && !Number.isInteger(v) ? +v.toFixed(3) : v)}</td>`; }).join("")}</tr>`).join("")}</table></div>${n && rows.length > n ? `<div class="mut">… ${rows.length - n} more rows · ${rows.length} rows × ${cols.length} columns</div>` : ""}`;
+}
+const pyv = v => isNA(v) ? "np.nan" : typeof v === "string" ? `'${v}'` : String(v);
+/* range sliders: update the label live while dragging, re-render only on release (re-rendering mid-drag would drop the slider) */
+document.addEventListener("input", e => {
+  const t = e.target; if (t.type !== "range" || e._live) return; e.stopPropagation();
+  const lb = t.closest("label"), sp = lb && lb.querySelector("span");
+  if (sp) { const h = sp.innerHTML, k = h.lastIndexOf(":"); if (k >= 0) sp.innerHTML = h.slice(0, k + 1) + h.slice(k + 1).replace(/-?\d+(\.\d+)?/, t.value); }
+}, true);
+document.addEventListener("change", e => { const t = e.target; if (t.type !== "range") return; const ev = new Event("input", {bubbles: true}); ev._live = true; t.dispatchEvent(ev); }, true);
+
+W.conv = (el) => {
+  const PRE = {
+    "Vertical edge": Array.from({length: 8}, () => [20, 20, 20, 20, 200, 200, 200, 200]),
+    "Bright square": Array.from({length: 8}, (_, r) => Array.from({length: 8}, (_, c) => r >= 2 && r <= 5 && c >= 2 && c <= 5 ? 220 : 30)),
+    "Diagonal line": Array.from({length: 8}, (_, r) => Array.from({length: 8}, (_, c) => Math.abs(r - c) <= 0 ? 230 : 25)),
+    "Gradient": Array.from({length: 8}, (_, r) => Array.from({length: 8}, (_, c) => 20 + c * 30))};
+  const K = {"Outline (edge detect)": [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], "Vertical edge": [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], "Horizontal edge": [[-1, -2, -1], [0, 0, 0], [1, 2, 1]], "Sharpen": [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], "Box blur (÷9)": [[1, 1, 1], [1, 1, 1], [1, 1, 1]], "Identity": [[0, 0, 0], [0, 1, 0], [0, 0, 0]], "Custom": [[0, 0, 0], [0, 1, 0], [0, 0, 0]]};
+  let pre = "Vertical edge", kn = "Vertical edge", pos = 0, all = false; let img = PRE[pre].map(r => r.slice());
+  const ker = () => K[kn], div = () => kn.includes("÷9") ? 9 : 1;
+  const at = (r, c) => { let s = 0; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) s += img[r + i][c + j] * ker()[i][j]; return Math.round(s / div()); };
+  const g = v => { const x = Math.max(0, Math.min(255, v)); return `rgb(${x},${x},${x})`; }, fg = v => Math.max(0, Math.min(255, v)) > 128 ? "#000" : "#fff";
+  function draw(){
+    const r0 = Math.floor(pos / 6), c0 = pos % 6, terms = [];
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) terms.push(`${img[r0 + i][c0 + j]}×${ker()[i][j]}`);
+    el.innerHTML = `<h4>Convolution on an 8 × 8 grayscale image (3 × 3 kernel → 6 × 6 output)</h4>
+      <div class="row"><label class="f" style="flex:1;min-width:150px"><span>Image</span><select data-pre="1">${Object.keys(PRE).map(n => `<option ${n === pre ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+      <label class="f" style="flex:1;min-width:170px"><span>Kernel</span><select data-k="1">${Object.keys(K).map(n => `<option ${n === kn ? "selected" : ""}>${n}</option>`).join("")}</select></label></div>
+      <div class="row" style="gap:18px;align-items:flex-start"><div><div class="mut">Input image</div><div class="mat" style="grid-template-columns:repeat(8,34px)">${img.map((row, r) => row.map((v, c) => `<div class="${r >= r0 && r < r0 + 3 && c >= c0 && c < c0 + 3 ? "hl" : ""}" style="background:${g(v)};color:${fg(v)}">${v}</div>`).join("")).join("")}</div></div>
+      <div><div class="mut">Kernel${kn === "Custom" ? " (edit)" : ""}</div><div class="mat" style="grid-template-columns:repeat(3,${kn === "Custom" ? "auto" : "34px"})">${ker().flat().map((v, i) => kn === "Custom" ? `<input type="number" value="${v}" data-kv="${i}">` : `<div style="background:${v > 0 ? "#dcfce7" : v < 0 ? "#fee2e2" : "#f1f5f9"};color:#111">${v}</div>`).join("")}</div></div>
+      <div><div class="mut">Output feature map</div><div class="mat" style="grid-template-columns:repeat(6,34px)">${Array.from({length: 36}, (_, p) => { const r = Math.floor(p / 6), c = p % 6, show = all || p <= pos, v = show ? at(r, c) : ""; return `<div class="${p === pos ? "hl" : ""}" style="background:${show ? g(v) : "#f8fafc"};color:${show ? fg(v) : "#94a3b8"}">${v}</div>`; }).join("")}</div></div></div>
+      <div class="calc">Output[${r0}][${c0}] = ${terms.join(" + ")}${div() > 1 ? " ÷ 9" : ""} = <b>${at(r0, c0)}</b> (shown clipped to 0–255)</div>
+      <div class="row" style="margin-top:8px"><button class="btn" data-mv="-1" ${pos ? "" : "disabled"}>← Previous position</button><button class="btn p" data-mv="1" ${pos < 35 ? "" : "disabled"}>Slide kernel →</button><button class="btn" data-all="1">Compute all</button><button class="btn" data-mv="0">Start again</button></div>
+      <p class="mut">Try the vertical-edge kernel on the vertical edge image: the output is bright only where brightness changes. A 3 × 3 kernel on an 8 × 8 image gives a 6 × 6 output (no padding).</p>`;
+  }
+  el.onclick = e => { const m = e.target.closest("[data-mv]"), a = e.target.closest("[data-all]"); if (m) { const d = +m.dataset.mv; pos = d ? Math.max(0, Math.min(35, pos + d)) : 0; all = d ? all : false; draw(); } if (a) { all = true; pos = 35; draw(); } };
+  el.onchange = e => { const d = e.target.dataset; if (d.pre) { pre = e.target.value; img = PRE[pre].map(r => r.slice()); } if (d.k) kn = e.target.value; if (d.kv) K.Custom[Math.floor(d.kv / 3)][d.kv % 3] = Math.round(+e.target.value || 0); draw(); };
+  draw();
+};
+W.ladder = (el, c, cfg) => {
+  const L = DATA.ladder, CLS = ["VII", "VIII", "IX", "X", "XI", "XII"], CC = DATA.classColors;
+  let s = 0, mode = cfg.mode || "one";
+  function draw(){
+    let h = `<div class="tabs"><button data-m="one" class="${mode === "one" ? "on" : ""}">One strand</button><button data-m="all" class="${mode === "all" ? "on" : ""}">All strands (matrix)</button></div>`;
+    if (mode === "one") {
+      const t = L[s];
+      h += `<div class="row" style="margin-bottom:10px">${L.map((x, i) => `<button class="btn ${i === s ? "p" : ""}" style="--c:${x.c}" data-s="${i}">${esc(x.s)}</button>`).join("")}</div>
+      <div class="ladder" style="--c:${t.c}">${CLS.map((k, i) => `<div class="rung" style="--k:${CC[k]}"><span class="cl">${k}</span><div><b>${i < 4 ? "Class " + k + " · taught in the class pages" : "Class " + k + " · CBSE 843 use case"}</b><p>${esc(t.steps[i])}</p></div></div>`).join("")}</div>
+      <p class="mut">Each year returns to the same idea with more depth. Use it to plan what to revise, what to extend and what to leave for later.</p>`;
+    } else {
+      h += `<div class="tw"><table class="lad"><tr><th class="l">Strand</th>${CLS.map(k => `<th style="background:${CC[k]};color:#fff">${k}</th>`).join("")}</tr>${L.map(x => `<tr><th class="l" style="border-left:6px solid ${x.c}">${esc(x.s)}</th>${x.steps.map(t => `<td class="l" style="min-width:150px">${esc(t)}</td>`).join("")}</tr>`).join("")}</table></div><p class="mut">Scroll sideways on a phone. VII–X: CBSE Computational Thinking and AI / AI (417). XI–XII: AI (843).</p>`;
+    }
+    el.innerHTML = h;
+  }
+  el.onclick = e => { const b = e.target.closest("[data-s]"), m = e.target.closest("[data-m]"); if (b) { s = +b.dataset.s; draw(); } if (m) { mode = m.dataset.m; draw(); } };
+  draw();
+};
+W.pixelart = (el) => {
+  const N = 12, PAL = [[255, 255, 255], [0, 0, 0], [239, 68, 68], [249, 115, 22], [250, 204, 21], [34, 197, 94], [59, 130, 246], [168, 85, 247], [120, 120, 120]];
+  let grid = Array.from({length: N * N}, () => 0), col = 2, gray = false, nums = false, last = null;
+  ["............", "..xx....xx..", ".xxxx..xxxx.", "xxxxxxxxxxxx", "xxxxxxxxxxxx", "xxxxxxxxxxxx", ".xxxxxxxxxx.", "..xxxxxxxx..", "...xxxxxx...", "....xxxx....", ".....xx.....", "............"]
+    .forEach((row, r) => [...row].forEach((ch, c) => { if (ch === "x") grid[r * N + c] = 2; }));
+  const gv = p => Math.round(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]);
+  function draw(){
+    el.innerHTML = `<h4>Pixel art: every image is a grid of numbers</h4><div class="two"><div>
+      <div style="display:grid;grid-template-columns:repeat(${N},1fr);gap:1px;background:#cbd5e1;border:1px solid #cbd5e1;max-width:380px;touch-action:none" id="pg">${grid.map((c, i) => { const p = PAL[c], g = gv(p), bg = gray ? `rgb(${g},${g},${g})` : `rgb(${p.join(",")})`;
+        return `<div data-i="${i}" style="aspect-ratio:1;background:${bg};display:flex;align-items:center;justify-content:center;font-size:8px;color:${g > 128 ? "#000" : "#fff"};cursor:crosshair">${nums ? (gray ? g : "") : ""}</div>`; }).join("")}</div></div><div>
+      <div class="row">${PAL.map((p, i) => `<button data-c="${i}" title="rgb(${p})" style="width:30px;height:30px;border-radius:8px;border:${i === col ? "3px solid #111" : "1px solid #94a3b8"};background:rgb(${p.join(",")});cursor:pointer"></button>`).join("")}</div>
+      <label class="f"><input type="checkbox" data-g="1" ${gray ? "checked" : ""}> Show as grayscale</label><label class="f"><input type="checkbox" data-n="1" ${nums ? "checked" : ""}> Show grayscale pixel values</label>
+      <div class="row"><button class="btn" data-clear="1">Clear</button></div>
+      <div class="calc">Resolution: ${N} × ${N} = ${N * N} pixels<br>${gray ? "1 channel (grayscale): 1 number per pixel" : "3 channels (RGB): 3 numbers per pixel"} → ${gray ? N * N : N * N * 3} numbers<br>${last != null ? `Last pixel (row ${Math.floor(last / N)}, col ${last % N}): RGB (${PAL[grid[last]].join(", ")}) → gray ${gv(PAL[grid[last]])}` : "Tap or drag on the grid to paint."}</div></div></div>`;
+  }
+  let down = false;
+  const paint = t => { const d = t && t.closest && t.closest("[data-i]"); if (!d) return; const i = +d.dataset.i; if (grid[i] !== col || last !== i) { grid[i] = col; last = i; const p = PAL[col], g = gv(p); d.style.background = gray ? `rgb(${g},${g},${g})` : `rgb(${p.join(",")})`; if (nums && gray) d.textContent = g; el.querySelector(".calc").innerHTML = `Resolution: ${N} × ${N} = ${N * N} pixels<br>${gray ? "1 channel (grayscale)" : "3 channels (RGB)"}<br>Last pixel (row ${Math.floor(i / N)}, col ${i % N}): RGB (${p.join(", ")}) → gray ${g}`; } };
+  el.addEventListener("pointerdown", e => { if (e.target.closest("#pg")) { down = true; paint(e.target); e.preventDefault(); } });
+  el.addEventListener("pointermove", e => { if (down) paint(document.elementFromPoint(e.clientX, e.clientY)); });
+  window.addEventListener("pointerup", () => down = false);
+  el.onclick = e => { const b = e.target.closest("[data-c]"); if (b) { col = +b.dataset.c; draw(); } if (e.target.closest("[data-clear]")) { grid = grid.map(() => 0); last = null; draw(); } };
+  el.onchange = e => { if (e.target.dataset.g) gray = e.target.checked; if (e.target.dataset.n) { nums = e.target.checked; if (nums) gray = true; } draw(); };
+  draw();
+};
+W.pool = (el) => {
+  let fm = [[3, -2, 5, 1], [-4, 6, -1, 2], [7, 1, -3, -6], [0, -5, 4, 8]];
+  const cell = (v, bg) => `<div style="background:${bg || (v > 0 ? "#dcfce7" : v < 0 ? "#fee2e2" : "#f1f5f9")};color:#111;font-size:13px;font-weight:600">${v}</div>`;
+  function draw(){
+    const relu = fm.map(r => r.map(v => Math.max(0, v))), win = (m, f) => [[0, 0], [0, 2], [2, 0], [2, 2]].map(([r, c]) => f([m[r][c], m[r][c + 1], m[r + 1][c], m[r + 1][c + 1]]));
+    const mx = win(relu, a => Math.max(...a)), av = win(relu, a => +(a.reduce((p, q) => p + q, 0) / 4).toFixed(2)), Q = ["#fde68a", "#bfdbfe", "#fbcfe8", "#bbf7d0"], qc = (r, c) => Q[(r >= 2 ? 2 : 0) + (c >= 2 ? 1 : 0)];
+    el.innerHTML = `<h4>Inside a CNN: ReLU and pooling</h4><div class="row" style="gap:16px;align-items:flex-start">
+      <div><div class="mut">Feature map (after convolution)</div><div class="mat" style="grid-template-columns:repeat(4,34px)">${fm.flat().map(v => cell(v)).join("")}</div></div><b style="align-self:center">ReLU →</b>
+      <div><div class="mut">After ReLU: max(0, x)</div><div class="mat" style="grid-template-columns:repeat(4,34px)">${relu.map((r, i) => r.map((v, j) => cell(v, qc(i, j))).join("")).join("")}</div></div><b style="align-self:center">2×2 pool →</b>
+      <div><div class="mut">Max pooling</div><div class="mat" style="grid-template-columns:repeat(2,34px)">${mx.map((v, i) => cell(v, Q[i])).join("")}</div><div class="mut" style="margin-top:6px">Average pooling</div><div class="mat" style="grid-template-columns:repeat(2,40px)">${av.map((v, i) => cell(v, Q[i]).replace("width:34px", "")).join("")}</div></div></div>
+      <div class="row" style="margin-top:8px"><button class="btn p" data-rnd="1">New random feature map</button></div>
+      <p class="mut">ReLU turns every negative value into 0. Max pooling keeps the largest value of each coloured 2 × 2 window, halving the width and height while keeping the strongest features.</p>`;
+  }
+  el.onclick = e => { if (e.target.closest("[data-rnd]")) { fm = fm.map(r => r.map(() => Math.floor(Math.random() * 19) - 9)); draw(); } };
+  draw();
+};
+W.prompt = (el) => {
+  const T = {
+    plan: ["Lesson plan", "an experienced CBSE Artificial Intelligence teacher", "Write a 40-minute lesson plan using the 5E model (engage, explore, explain, elaborate, evaluate)", "IX", "AI project cycle: problem scoping with the 4Ws canvas", "A table with columns: phase, minutes, teacher does, students do, resources. Then 3 exit-ticket questions.", "Use Indian school examples. Include one unplugged activity for a class with no computers. Simple English."],
+    mcq: ["Questions with answer key", "a CBSE examiner for Artificial Intelligence (417)", "Create 5 competency-based multiple-choice questions", "X", "Evaluating models: precision, recall and F1 score", "Number each question, give 4 options (A–D), then a separate answer key with a one-line explanation for each.", "Exactly one correct option per question. Distractors must reflect common student mistakes. No trick wording."],
+    rubric: ["Rubric", "a teacher mentoring Class XII capstone projects", "Create an assessment rubric for a capstone project", "XII", "SDG-aligned AI capstone project", "A table with criteria as rows and 4 levels (beginning, developing, proficient, exemplary) as columns, with marks.", "Total 25 marks: project 15, documentation 6, video 4. Observable descriptors only."],
+    diff: ["Differentiated worksheet", "a Class VII teacher of Computational Thinking and AI", "Make a worksheet in three levels (support, core, challenge)", "VII", "Binary numbers and punched cards", "Three sections with 4 questions each, then answers.", "Support level uses pictures and fill-in-the-blanks. Challenge level asks students to explain their reasoning."],
+    feedback: ["Feedback comment", "a supportive AI teacher", "Draft feedback on a student project summary I will paste below", "X", "A project on predicting water wastage in school (summary pasted below, with no student name)", "One strength, one next step with a deadline, under 80 words.", "Kind, specific and actionable. Do not rewrite the work for the student."]};
+  let k = "mcq", v = {}, priv = false, verify = true;
+  const load = key => { const t = T[key]; v = {role: t[1], task: t[2], cls: t[3], topic: t[4], format: t[5], cons: t[6]}; };
+  load(k);
+  const build = () => `You are ${v.role}.\n${v.task} for Class ${v.cls} students on: ${v.topic}.\nFormat: ${v.format}\nConstraints: ${v.cons}` + (verify ? `\nBefore you finish, check that every fact and answer is correct for the CBSE curriculum and list anything I should verify.` : "");
+  function checks(){
+    return [[v.role.trim().length > 5, "Role: who the AI should act as"],
+      [/^(write|create|make|draft|design|generate|list|explain|suggest|prepare|plan)\b/i.test(v.task.trim()), "Task starts with a clear action verb"],
+      [/\d/.test(v.task + v.format + v.cons), "A number (how many, how long, how many marks)"],
+      [!!v.cls && v.topic.trim().length > 5, "Context: class and topic"],
+      [v.format.trim().length > 10, "Format of the output"],
+      [v.cons.trim().length > 10, "Constraints (level, language, examples)"],
+      [verify, "Asks the AI to flag what to verify"],
+      [priv, "No student names, marks or personal data"]];
+  }
+  function draw(){
+    const C = checks(), sc = C.filter(x => x[0]).length;
+    el.innerHTML = `<h4>Build a teaching prompt</h4><div class="tabs">${Object.keys(T).map(x => `<button data-t="${x}" class="${x === k ? "on" : ""}">${T[x][0]}</button>`).join("")}</div>
+    <div class="two"><div>
+      <label class="f"><span>Role: you are …</span><input type="text" data-f="role" value="${esc(v.role)}"></label>
+      <label class="f"><span>Task</span><input type="text" data-f="task" value="${esc(v.task)}"></label>
+      <div class="row"><label class="f" style="flex:0 0 110px"><span>Class</span><select data-f="cls">${["VII", "VIII", "IX", "X", "XI", "XII"].map(c => `<option ${c === v.cls ? "selected" : ""}>${c}</option>`).join("")}</select></label>
+      <label class="f" style="flex:1;min-width:160px"><span>Topic and context</span><input type="text" data-f="topic" value="${esc(v.topic)}"></label></div>
+      <label class="f"><span>Format</span><textarea data-f="format" style="min-height:56px">${esc(v.format)}</textarea></label>
+      <label class="f"><span>Constraints</span><textarea data-f="cons" style="min-height:56px">${esc(v.cons)}</textarea></label>
+      <label class="f" style="display:flex;gap:8px"><input type="checkbox" data-c="verify" ${verify ? "checked" : ""}> Ask the AI to list what I should verify</label>
+      <label class="f" style="display:flex;gap:8px"><input type="checkbox" data-c="priv" ${priv ? "checked" : ""}> I have removed student names, marks and personal details</label>
+    </div><div>
+      <div class="kpis"><div class="kpi"><b>${sc} / ${C.length}</b><span>prompt quality checks</span></div></div><div class="bar"><i style="width:${sc / C.length * 100}%"></i></div>
+      <ul class="check">${C.map(x => `<li>${x[0] ? `<span class="okc">✓</span>` : `<span class="noc">✗</span>`} ${x[1]}</li>`).join("")}</ul>
+      <label class="f"><span>Your prompt (copy it into the AI tool your school allows)</span><textarea readonly id="pout" style="min-height:170px">${esc(build())}</textarea></label>
+      <div class="row"><button class="btn p" data-a="copy">Copy prompt</button><span class="mut" id="pmsg"></span></div>
+      <p class="mut">After the answer comes back: solve every question yourself, check facts against the textbook, then ask for one specific improvement (for example “make question 3 harder” or “use a rural example”).</p>
+    </div></div>`;
+  }
+  el.oninput = e => { const f = e.target.dataset.f; if (!f) return; v[f] = e.target.value; const C = checks(), sc = C.filter(x => x[0]).length;
+    el.querySelector("#pout").value = build(); el.querySelector(".kpi b").textContent = `${sc} / ${C.length}`; el.querySelector(".bar i").style.width = sc / C.length * 100 + "%";
+    el.querySelector("ul.check").innerHTML = C.map(x => `<li>${x[0] ? `<span class="okc">✓</span>` : `<span class="noc">✗</span>`} ${x[1]}</li>`).join(""); };
+  el.onchange = e => { const c = e.target.dataset.c; if (c === "verify") { verify = e.target.checked; draw(); } else if (c === "priv") { priv = e.target.checked; draw(); } else if (e.target.dataset.f === "cls") draw(); };
+  el.onclick = e => { const t = e.target.closest("[data-t]"), a = e.target.closest("[data-a]");
+    if (t) { k = t.dataset.t; load(k); draw(); }
+    if (a) { const txt = build(), msg = el.querySelector("#pmsg"); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => msg.textContent = "Copied.", () => { const ta = el.querySelector("#pout"); ta.focus(); ta.select(); msg.textContent = "Selected: press Ctrl+C (or long-press → Copy)."; }); } };
+  draw();
+};
+W.rgb = (el) => {
+  const v = [236, 72, 153];
+  function draw(){
+    const g = Math.round(0.299 * v[0] + 0.587 * v[1] + 0.114 * v[2]), hex = "#" + v.map(x => x.toString(16).padStart(2, "0")).join("");
+    el.innerHTML = `<h4>RGB colour mixer</h4><div class="two"><div>${["Red", "Green", "Blue"].map((n, i) => `<label class="f"><span>${n}: ${v[i]}</span><input type="range" min="0" max="255" value="${v[i]}" data-i="${i}" style="accent-color:${["#dc2626", "#16a34a", "#2563eb"][i]}"></label>`).join("")}
+      <div class="calc">Pixel = (${v.join(", ")}) · hex ${hex}<br>Grayscale = 0.299R + 0.587G + 0.114B = <b>${g}</b></div></div>
+      <div class="row" style="align-items:stretch"><div style="flex:1;min-width:120px;border-radius:12px;background:${hex};min-height:120px;display:flex;align-items:flex-end;padding:8px;color:#fff;font-weight:700;text-shadow:0 1px 2px #000">RGB pixel</div>
+      <div style="flex:1;min-width:120px;border-radius:12px;background:rgb(${g},${g},${g});min-height:120px;display:flex;align-items:flex-end;padding:8px;color:${g > 128 ? "#000" : "#fff"};font-weight:700">Grayscale ${g}</div></div></div>
+      <p class="mut">An RGB pixel stores three numbers (0–255). A grayscale pixel stores one. 256 × 256 × 256 ≈ 16.7 million possible colours.</p>`;
+  }
+  el.oninput = e => { if (e.target.dataset.i) { v[+e.target.dataset.i] = +e.target.value; paint(); } };
+  el.onchange = () => draw();
+  function paint(){ const g = Math.round(0.299 * v[0] + 0.587 * v[1] + 0.114 * v[2]), hex = "#" + v.map(x => x.toString(16).padStart(2, "0")).join(""), sw = el.querySelectorAll(".row > div");
+    sw[0].style.background = hex; sw[1].style.background = `rgb(${g},${g},${g})`; sw[1].textContent = "Grayscale " + g; sw[1].style.color = g > 128 ? "#000" : "#fff";
+    el.querySelectorAll("label.f span").forEach((s, i) => s.textContent = ["Red", "Green", "Blue"][i] + ": " + v[i]);
+    el.querySelector(".calc").innerHTML = `Pixel = (${v.join(", ")}) · hex ${hex}<br>Grayscale = 0.299R + 0.587G + 0.114B = <b>${g}</b>`; }
+  draw();
+};
+
+/* ---------- AI Teacher Training: page overrides (loaded after engine.js and mindmap.js) ---------- */
+const CC = DATA.classColors;
+const ORD = ["VII", "VIII", "IX", "X", "XI", "XII"], uniq = a => ORD.filter(k => a.includes(k));
+const clsChip = k => `<span class="cc" style="--k:${CC[k]}">${k}</span>`;
+const classLink = (k, route) => DATA.classBase + DATA.classFiles[k] + "#/" + route;
+const mods = () => CL().parts.filter(p => p.units).flatMap(p => p.units);
+const labsPart = () => CL().parts.find(p => p.labs);
+
+/* dashboard */
+function pageClass(){
+  const X = CL(), M = mods(), open = M.filter(u => !u.locked), LP = labsPart();
+  const hrs = M.reduce((s, u) => s + (u.hours || 0), 0);
+  let h = `<section class="hero dash" style="${cssC("#ea580c", "#db2777")}"><span class="k">Teacher training programme · Classes VII → XII</span><h2>${esc(X.title)}</h2><p>${esc(X.summary)}</p><div class="chips">${pills(X.chips, "chip")}</div></section>`;
+  const tools = [
+    ["#/T/map", "#d97706", "#ca8a04", "Mind map", "Curriculum mind map", "Every track, module, concept, class link and XI–XII use case in one colour-coded map.", [`${X.parts.length} branches`]],
+    ["#/T/ladder", "#7c3aed", "#2563eb", "Vertical plan", "Progression ladder VII → XII", "How each strand grows from Class VII to Class XII: plan revision, extension and gaps.", [`${DATA.ladder.length} strands`, "6 classes"]],
+    ["#/T/L", "#4d7c0f", "#16a34a", "Hands-on", "Visual Labs", "Interactive labs to try as your students will, with facilitation tips, assessment points and viva.", [`${LP.labs.length} labs`]],
+    [DATA.links.test, "#0891b2", "#0d9488", "Adaptive", "Adaptive assessment", "Questions adapt to you; a mastery map and spaced revision show what to revise next. Progress stays on your device; download only your results.", ["Mastery model", "Results PDF"]],
+    [DATA.links.trainer, "#334155", "#0f766e", "For trainers", "Trainer view", "Load participants’ results PDFs to see class progress, weak modules, item analysis and question validation.", ["Class progress", "Item analysis"]],
+    ["#/T/quiz", "#e11d48", "#db2777", "Test yourself", "Mixed quiz", "Twenty random questions from all open modules, with explanations.", [`${allQ().length} questions`]]];
+  h += `<div class="grid tools">` + tools.map(t => `<a class="card" href="${t[0]}" style="${cssC(t[1], t[2])}"><span class="k">${t[3]}</span><h3>${t[4]}</h3><p>${t[5]}</p><div class="meta">${pills(t[6])}</div></a>`).join("") + `</div>`;
+  X.parts.filter(p => p.units).forEach((p, pi) => {
+    h += `<section class="track" style="${cssC(p.c, p.c2)}"><div class="th"><span class="tn">${pi + 1}</span><div><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p></div></div><div class="grid">` +
+      p.units.map(u => u.locked ? `<div class="card lock" style="--c:${u.c}"><span class="k">${esc(u.code)}</span><h3>${esc(u.title)}</h3><p>Available in the full edition.</p><div class="meta"><span class="pill">🔒 Full edition</span></div></div>` :
+        `<a class="card" href="#/T/${p.id}/${u.id}" style="--c:${u.c}"><span class="k">${esc(u.code)} · ${u.hours} h</span><h3>${esc(u.title)}</h3><p>${esc(u.outcomes[0])}</p><div class="meta">${uniq(u.classes.map(x => x[0])).map(clsChip).join("")}<span class="arrow">→</span>${uniq(u.bridge.map(x => x[0])).map(clsChip).join("")}</div></a>`).join("") + `</div></section>`;
+  });
+  h += `<section class="sec" style="--c:#ea580c"><h3><span class="n">⏱</span>Programme at a glance</h3><div class="tw"><table><tr><th class="l">Module</th><th class="l">Track</th><th>Hours</th><th class="l">Students meet it in</th><th class="l">Builds towards</th></tr>` +
+    X.parts.filter(p => p.units).flatMap(p => p.units.map(u => `<tr><td class="l"><b style="color:${u.c}">${esc(u.code || "")}</b> ${esc(u.title)}${u.locked ? " 🔒" : ""}</td><td class="l">${esc(p.short)}</td><td>${u.hours || ""}</td><td class="l">${u.locked ? "" : uniq(u.classes.map(x => x[0])).map(clsChip).join(" ")}</td><td class="l">${u.locked ? "" : uniq(u.bridge.map(x => x[0])).map(clsChip).join(" ")}</td></tr>`)).join("") +
+    `<tr><th class="l">Modules</th><th></th><th>${hrs}</th><th class="l" colspan="2">plus about ${LP.labs.length + 3} hours of labs</th></tr></table></div>
+    <p class="mut">Suggested delivery: 4 tracks over 10 days of 6 hours, or one module a week across a term. ${DATA.sample ? `This sample edition opens ${open.length} of ${M.length} modules.` : ""}</p></section>`;
+  return h;
+}
+
+/* module page */
+function pageUnit(pid, uid){
+  const p = PART(pid), i = p.units.findIndex(u => u.id === uid), u = p.units[i];
+  if (!u || u.locked) return pagePart(pid);
+  let n = 0; const sec = (title, body, id) => `<section class="sec" style="--c:${u.c}"${id ? ` id="${id}"` : ""}><h3><span class="n">${++n}</span>${title}</h3>${body}</section>`;
+  let h = crumbs(baseCrumbs().concat([["T/" + pid, p.short, p.c], ["T/" + pid + "/" + uid, u.code, u.c]])) +
+    `<section class="hero" style="${cssC(u.c, p.c)}"><h2>${esc(u.code)}: ${esc(u.title)}</h2><div class="chips"><span class="chip">${u.hours} hours</span><span class="chip">${esc(p.short)}</span>${uniq(u.classes.map(x => x[0]).concat(u.bridge.map(x => x[0]))).map(k => `<span class="chip">Class ${k}</span>`).join("")}</div></section>`;
+  h += sec("Learning outcomes for the teacher", `<ul class="lo">${u.outcomes.map(o => `<li>${esc(o)}</li>`).join("")}</ul>`);
+  h += sec("Where students meet it: Classes VII–X", `<div class="maps">${u.classes.map(c => `<a class="mapc" href="${classLink(c[0], c[1])}" target="_blank" rel="noopener" style="--k:${CC[c[0]]}"><span class="cl">${c[0]}</span><div><b>${esc(c[2])} ↗</b><p>${esc(c[3])}</p></div></a>`).join("")}</div><p class="mut">Links open the matching class page${DATA.sample ? " (sample edition: some units are locked there)" : ""}.</p>`);
+  h += sec("Where it leads: Classes XI–XII use cases (CBSE AI 843)", `<div class="maps">${u.bridge.map(c => `<div class="mapc" style="--k:${CC[c[0]]}"><span class="cl">${c[0]}</span><div><b>${esc(c[1])}</b><p>${esc(c[2])}</p></div></div>`).join("")}</div>`);
+  h += sec("Key concepts <span class=\"mut\" style=\"font-weight:400\">(tap to open)</span>", `<div class="topics">${u.topics.map(t => `<details class="topic"><summary>${esc(t[0])}</summary><div>${esc(t[1])}</div></details>`).join("")}</div>`);
+  const tot = u.plan.reduce((s, r) => s + +r[0], 0);
+  h += sec(`Model session plan (${tot} minutes)`, `<div class="plan">${u.plan.map((r, k) => `<div class="step" style="--w:${+r[0] / tot * 100}%"><span class="mn">${r[0]}′</span><b>${esc(r[1])}</b><p>${esc(r[2])}</p></div>`).join("")}</div><div class="tl">${u.plan.map((r, k) => `<i style="flex:${r[0]};background:color-mix(in srgb,${u.c} ${90 - k * 14}%,#fff)" title="${esc(r[1])}"></i>`).join("")}</div>`);
+  h += sec("Common student misconceptions and how to fix them", `<div class="myths">${u.myths.map(m => `<div class="myth"><p class="x"><b>Misconception:</b> ${esc(m[0])}</p><p class="y"><b>Teach instead:</b> ${esc(m[1])}</p></div>`).join("")}</div>`);
+  const acts = u.activities || [];
+  acts.forEach((a, k) => { h += sec("Activity: " + esc(a.title), `<div id="act${k}"></div>`); });
+  h += sec("Module quiz", `<div id="uq"></div>`);
+  h += `<section class="sec" style="--c:${u.c}"><div class="row" style="justify-content:space-between"><span>Ready to check your mastery across modules?</span><a class="btn p" style="--c:${u.c}" href="${DATA.links.test}">Open the adaptive assessment →</a></div></section>`;
+  const nb = mods().filter(x => !x.locked), j = nb.indexOf(u), pp = x => CL().parts.find(q => q.units && q.units.includes(x)).id;
+  h += `<div class="row" style="justify-content:space-between">${j > 0 ? `<a class="btn" style="--c:${nb[j - 1].c}" href="#/T/${pp(nb[j - 1])}/${nb[j - 1].id}">← ${esc(nb[j - 1].code)} ${esc(nb[j - 1].title)}</a>` : "<span></span>"}${j < nb.length - 1 ? `<a class="btn" style="--c:${nb[j + 1].c}" href="#/T/${pp(nb[j + 1])}/${nb[j + 1].id}">${esc(nb[j + 1].code)} ${esc(nb[j + 1].title)} →</a>` : ""}</div>`;
+  $("#app").innerHTML = h;
+  acts.forEach((a, k) => activity($("#act" + k), a, u.c));
+  quiz($("#uq"), u.quiz, u.c, "T" + u.id);
+  return null;
+}
+
+/* lab page: engine lab page plus facilitation tips */
+const _pageLab = pageLab;
+pageLab = function(pid, lid){
+  const r = _pageLab(pid, lid), l = PART(pid).labs.find(x => x.id === lid);
+  if (l && !l.locked && l.tips) {
+    const first = $("#app").querySelector("section.sec");
+    if (first) first.insertAdjacentHTML("beforebegin", `<section class="sec" style="--c:${l.c}"><h3><span class="n">★</span>Facilitation tips</h3><ul class="lo">${l.tips.map(t => `<li>${esc(t)}</li>`).join("")}</ul></section>`);
+    const ah = [...$("#app").querySelectorAll("section.sec h3")].find(x => /Assessment points/.test(x.textContent));
+    if (ah) { ah.lastChild.textContent = "Teacher competencies"; ah.nextElementSibling.textContent = "Teacher competencies for this lab. Tick each point when you can do it confidently and explain it to students."; }
+    const vh = [...$("#app").querySelectorAll("section.sec h3")].find(x => /Viva voce/.test(x.textContent));
+    if (vh) vh.lastChild.textContent = "Trainer questions (viva practice)";
+  }
+  return r;
+};
+
+/* progression ladder page */
+function pageLadder(){
+  $("#app").innerHTML = crumbs(baseCrumbs().concat([["T/ladder", "Progression ladder", "#7c3aed"]])) +
+    `<section class="hero" style="${cssC("#7c3aed", "#2563eb")}"><h2>Progression ladder: Class VII → XII</h2><p>Each strand of the AI curriculum, year by year. VII–X follow the CBSE Computational Thinking and AI handbooks and AI (417); XI–XII follow AI (843).</p><div class="chips">${["VII", "VIII", "IX", "X", "XI", "XII"].map(k => `<span class="chip" style="background:${CC[k]};border:1px solid rgba(255,255,255,.75)">${k}</span>`).join("")}</div></section>
+    <section class="sec" style="--c:#7c3aed"><div id="lad"></div></section>`;
+  W.ladder($("#lad"), "#7c3aed", {mode: "one"});
+  return null;
+}
+
+/* richer mind map: module → concepts, classes VII–X, XI–XII use cases */
+buildTree = function(){
+  const X = CL(), node = (t, c, kids, route) => ({t, c, kids: kids || [], route, open: false});
+  const parts = X.parts.map(p => {
+    let kids;
+    if (p.units) kids = p.units.map(u => node(`${u.code}: ${u.title}` + (u.locked ? " 🔒" : ""), u.c, u.locked ? [] : [
+      node("Key concepts", u.c, u.topics.map(t => node(t[0], u.c))),
+      node("Taught in Classes VII–X", u.c, u.classes.map(c => node(`${c[0]} · ${c[2]}`, u.c))),
+      node("XI–XII use cases", u.c, u.bridge.map(c => node(`${c[0]} · ${c[1]}`, u.c)))], u.locked ? null : `T/${p.id}/${u.id}`));
+    else kids = p.labs.map(l => node(l.title + (l.locked ? " 🔒" : ""), l.c, l.locked ? [] : l.assess.map(a => node(a, l.c)), l.locked ? null : `T/${p.id}/${l.id}`));
+    return node(p.title, p.c, kids, `T/${p.id}`);
+  });
+  const root = node(X.mapTitle, "#ea580c", parts, "T");
+  root.open = true; parts.forEach(p => p.open = true);
+  return root;
+};
+
+/* router: add the ladder page */
+const _render = render;
+render = function(){
+  const r = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  if (r[0] !== "T") r.unshift("T");
+  if (r[1] === "ladder") { CID = "T"; pageLadder(); window.scrollTo(0, 0); return; }
+  _render();
+};
+window.removeEventListener("hashchange", _render);
+window.addEventListener("hashchange", () => render());
+
+/* mind map wording for modules */
+const _pageMap = pageMap;
+pageMap = () => _pageMap().replace("Parts only", "Tracks only").replace("Show units", "Show modules").replace("Show topics", "Show details").replace("that unit or lab", "that module or lab");
+
+/* guard.js : discourages casual copying and printing of these pages.
+   Disables: right-click, text selection, copy/cut, drag, print, and the
+   keyboard shortcuts for save, print, view-source and developer tools.
+   Typing in boxes (search, readings, answers) keeps working normally.
+   Note: this is a deterrent for ordinary users. It cannot stop screenshots,
+   "view source", or downloading the repository (see the notes in the chat).
+   Version 2 (Oct 2026): runs only once per page, even if a page loads it twice
+   (the AI Education pages carry their own copy inside the file). */
+(function () {
+  'use strict';
+  if (window.__mmpGuard) return;
+  window.__mmpGuard = 2;
+
+  var FIELDS = 'input,textarea,select,[contenteditable="true"]';
+
+  var css = document.createElement('style');
+  css.textContent =
+    'html,body{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-touch-callout:none}' +
+    FIELDS + '{-webkit-user-select:text;-moz-user-select:text;user-select:text}' +
+    'img,svg{-webkit-user-drag:none}' +
+    '@media print{html{display:none!important}}';
+  (document.head || document.documentElement).appendChild(css);
+
+  function inField(t) {
+    if (t && t.nodeType === 3) t = t.parentElement;
+    return !!(t && t.closest && t.closest(FIELDS));
+  }
+
+  /* right-click, copy, cut, drag, start of a text selection */
+  ['contextmenu', 'copy', 'cut', 'dragstart', 'selectstart'].forEach(function (name) {
+    document.addEventListener(name, function (e) {
+      if (!inField(e.target)) e.preventDefault();
+    }, true);
+  });
+
+  /* keyboard shortcuts */
+  document.addEventListener('keydown', function (e) {
+    var k = (e.key || '').toLowerCase();
+    var mod = e.ctrlKey || e.metaKey;
+    var always =
+      e.key === 'F12' ||
+      (mod && (k === 'p' || k === 's' || k === 'u')) ||                  /* print, save, view source */
+      (mod && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) ||     /* developer tools */
+      (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'u'));   /* same on a Mac */
+    var outsideFields = mod && (k === 'a' || k === 'c' || k === 'x') && !inField(e.target);
+    if (always || outsideFields) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  /* printing from the browser menu: hide the page while the print preview is made */
+  window.addEventListener('beforeprint', function () { document.documentElement.style.display = 'none'; });
+  window.addEventListener('afterprint', function () { document.documentElement.style.display = ''; });
+})();
+
+render();
+
+</script>
+</body>
+</html>
