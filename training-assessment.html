@@ -309,6 +309,12 @@ const _readResults = readResults;
 readResults = function(t){ const d = _readResults(t); if (d && Array.isArray(d.log) && typeof QBY === "object" && QBY) d.log.forEach(e => { const q = QBY[e.q]; if (q && e.chosen == null) { e.correct = q.ans; e.chosen = e.ci >= 0 ? q.opts[e.ci] : "?"; } }); return d; };
 
 setTopic(DATA);
+/* Administered after the training modules: open only when every module quiz has been passed on this device. */
+const TT_LEFT = (() => { let p = {}; try { p = JSON.parse(localStorage.getItem("mmp-tt:modules:" + (DATA.sample ? "sample" : "full")) || "{}") || {}; } catch (e) {}
+  return DATA.km.nodes.filter(n => !String(n.formula).startsWith("Lab") && !((p[n.id] || 0) >= 0.6)); })();
+if (TT_LEFT.length) { document.querySelector("nav.tabs").style.display = "none";
+  document.getElementById("view").innerHTML = `<div class="panel"><h2>The assessment opens after the training modules</h2><p>Complete every module first: pass each module quiz with 60% or more, on this device and in this browser. Then review the mind map and come back here.</p>
+  <p><b>${TT_LEFT.length} module${TT_LEFT.length > 1 ? "s" : ""} to complete:</b></p><ul>${TT_LEFT.map(n => `<li><a href="${n.href}">${esc(n.formula)} · ${esc(n.name)}</a></li>`).join("")}</ul><p><a class="go" style="display:inline-block;text-decoration:none" href="index.html#/T/final">See my progress</a></p></div>`; }
 /* ===================== student app ===================== */
 const KEY = "mmp-practice:" + DATA.topic;
 let ST = {student: "", log: [], sid: 0};
@@ -516,7 +522,7 @@ document.addEventListener("click", e => {
   else if (e.target.closest("[data-reset]")) { if (e.target.closest("[data-reset]").dataset.sure) { ST = {student: ST.student, log: [], sid: 0}; save(); SES = null; render(); } else { const b = e.target.closest("[data-reset]"); b.dataset.sure = 1; b.textContent = "Tap again to erase all progress"; } }
 });
 document.addEventListener("keydown", e => { if (tab === "practice" && CUR && !CUR.done && /^[1-4a-d]$/i.test(e.key) && !e.target.closest("input")) { const k = isNaN(+e.key) ? e.key.toLowerCase().charCodeAt(0) - 97 : +e.key - 1; if (k < CUR.opts.length) answer(k); } });
-render();
+if (!TT_LEFT.length) render();
 </script>
 <script src="guard.js"></script>
 <script src="footer.js"></script>

@@ -18,6 +18,15 @@ This sample edition opens 2 of 14 modules (M1, M7) and 2 of 9 labs (Computer Vis
 
 All pages work offline and keep data only in the participant's browser. Nothing is uploaded.
 
+## How the programme runs
+
+1. **Training modules.** Work through the modules (with the Visual Labs, progression ladder and practice quiz alongside). A module is complete when its module quiz is passed with 60% or more.
+2. **Final review and assessment,** administered only after every module is complete:
+   - Step 1: the curriculum mind map (review),
+   - Step 2: the adaptive assessment. Participants download only their results PDF and send it to the trainer.
+
+Completion is kept in the participant's own browser on their device, so they should use the same device and browser throughout.
+
 ## Each module contains
 
 Teacher learning outcomes · where students meet it in Classes VII–X (links to the MMP class pages) · XI–XII use cases (CBSE 843) · key concepts · a timed model session plan · common student misconceptions and fixes · activities · a module quiz.
