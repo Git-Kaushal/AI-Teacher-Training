@@ -10,4 +10,3 @@ Curriculum references (structure and topics only; all explanations, activities, 
 
 Tool names (Teachable Machine, Orange Data Mining, Dialogflow, Botpress, Google Colab, TensorFlow, IBM SkillsBuild) are mentioned only as curriculum references; this resource is not affiliated with them or with CBSE.
 
-Part of MMP: https://git-kaushal.github.io/MMP/

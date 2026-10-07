@@ -1,4 +1,4 @@
-/* AI Teacher Training footer (MMP) - add <script src="footer.js"></script> before </body> on every page */
+/* AI Teacher Training footer - add <script src="footer.js"></script> before </body> on every page */
 (function () {
   if (document.getElementById('mmp-footer')) return;
 
@@ -25,7 +25,7 @@
     '<div class="t">AI in Education &mdash; Teacher Training Programme &middot; Mind Maps, Visual Labs and Adaptive Assessment</div>' +
     '<div>Original instructional design &amp; content by <b>Kaushal J</b> &middot; ' +
       'JEE Advanced / NEET / Education Strategist / AI in Education</div>' +
-    '<div><a href="index.html">&larr; Training modules</a> &middot; <a href="training-assessment.html">Adaptive assessment</a> &middot; <a href="trainer-view.html">Trainer view</a> &middot; <a href="https://git-kaushal.github.io/Mind-Map-and-Visual-Labs/">MMP site</a></div>';
+    '<div><a href="index.html">&larr; Training modules</a> &middot; <a href="training-assessment.html">Adaptive assessment</a> &middot; <a href="trainer-view.html">Trainer view</a></div>';
   document.body.appendChild(f);
 
   function refit() {

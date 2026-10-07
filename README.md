@@ -3,7 +3,7 @@
 Original instructional design & content by **Kaushal J** · Education Strategist · AI in Education · © 2026 Kaushal J. Sample edition.
 
 A training curriculum for teachers of AI in Classes VII–X, built on the CBSE Computational Thinking and AI handbooks (VII–VIII) and Artificial Intelligence 417 (IX–X), with use cases from Artificial Intelligence 843 (XI–XII, 2026-27).
-This sample edition opens 2 of 14 modules (M1, M7) and 2 of 9 labs (Computer Vision, Prompt Studio). The full edition is shared with participating schools directly.
+This sample edition opens 2 of 14 modules (M1, M7) and 2 of 9 labs (Computer Vision, Prompt Studio).
 
 ## Files
 
@@ -29,7 +29,7 @@ Completion is kept in the participant's own browser on their device, so they sho
 
 ## Each module contains
 
-Teacher learning outcomes · where students meet it in Classes VII–X (links to the MMP class pages) · XI–XII use cases (CBSE 843) · key concepts · a timed model session plan · common student misconceptions and fixes · activities · a module quiz.
+Teacher learning outcomes · where students meet it in Classes VII–X · XI–XII use cases (CBSE 843) · key concepts · a timed model session plan · common student misconceptions and fixes · activities · a module quiz.
 
 ## Modules
 
@@ -72,6 +72,6 @@ This sample edition is licensed under [CC BY-NC-ND 4.0](https://creativecommons.
 
 1. Create the repository (public) and upload every file in this folder to the root.
 2. Settings → Pages → Build and deployment → **Deploy from a branch** → branch `main`, folder `/ (root)` → Save.
-3. After a minute the site is at `https://git-kaushal.github.io/<repository-name>/`.
+3. After a minute the site is at `https://git-kaushal.github.io/AI-Teacher-Training/`.
 
 Note: if a repository is ever switched private and back to public, Pages must be re-enabled in step 2.
